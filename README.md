@@ -2,7 +2,7 @@
 
 ## Show Case
 
-/demo.gif
+<img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase.gif" alt="showcase" width="100%">
 
 ## Getting Started
 
