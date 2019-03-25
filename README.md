@@ -4,7 +4,7 @@
 
 <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase.gif" alt="showcase" width="30%">
 
-[DEMO](https://snack.expo.io/@barrsan/react-native-simple-image-cropper-demo)
+**[DEMO](https://snack.expo.io/@barrsan/react-native-simple-image-cropper-demo)**
 
 ---
 
