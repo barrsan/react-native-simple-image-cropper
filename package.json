@@ -6,6 +6,10 @@
   "scripts": {
     "build": "babel src -d build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barrsan/react-native-simple-image-cropper.git"
+  },
   "author": "Alex Baretsky <41ax@mail.ru>",
   "license": "MIT",
   "peerDependencies": {
