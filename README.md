@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
   },
 });
 
-class App extends React.Component {
-	state = {
+class App extends React.Component {	
+  state = {
     cropperParams: {},
     croppedImage: '',
   };
