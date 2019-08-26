@@ -22,6 +22,8 @@
         "singleQuote": true,
         "printWidth": 100
       }
-    ]
+    ],
+    "import/no-unresolved": { "commonjs": false, "amd": false },
+    "import/no-extraneous-dependencies": false
   }
 }

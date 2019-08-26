@@ -28,15 +28,26 @@ yarn add react-native-simple-image-cropper
 
 ```javascript
 import React from 'react';
-import { View, Image, Button, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View, Image, Button } from 'react-native';
 import ImageCropper from 'react-native-simple-image-cropper';
 
+const window = Dimensions.get('window');
+const w = window.width;
+
 const IMAGE = 'https://picsum.photos/900/500';
+
+const CROP_AREA_WIDTH = w;
+const CROP_AREA_HEIGHT = w;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+
+  imagePreview: {
+    width: 100,
+    height: 100,
   },
 });
 
@@ -55,9 +66,15 @@ class App extends React.Component {
   
   handlePress = async () => {
     const { cropperParams } = this.state;
+
     const cropSize = {
       width: 200,
       height: 200,
+    };
+
+    const cropAreaSize = {
+      width: CROP_AREA_WIDTH,
+      height: CROP_AREA_HEIGHT,
     };
 
     try {
@@ -65,6 +82,7 @@ class App extends React.Component {
         ...cropperParams,
         imageUri: IMAGE,
         cropSize,
+        cropAreaSize,
       });
       this.setState(prevState => ({
         ...prevState,
@@ -77,13 +95,19 @@ class App extends React.Component {
   
   render() {
     const { croppedImage } = this.state;
+    const src = { uri: croppedImage };
     
     return (
       <View style={styles.container}>
-        <ImageCropper imageUri={IMAGE} setCropperParams={this.setCropperParams} />
+        <ImageCropper
+          imageUri={IMAGE}
+          cropAreaWidth={CROP_AREA_WIDTH}
+          cropAreaHeight={CROP_AREA_HEIGHT}
+          setCropperParams={this.setCropperParams}
+        />
         <Button onPress={this.handleCropPress} title="Crop Image" color="blue" />
         {croppedImage ? (
-          <Image style={{ width: 100, height: 100 }} source={{ uri: croppedImage }} />
+          <Image style={styles.imagePreview} source={src} />
         ) : null}
       </View>
     );

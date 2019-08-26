@@ -6,7 +6,6 @@ import { getPercentFromNumber, getPercentDiffNumberFromNumber } from './helpers/
 
 const window = Dimensions.get('window');
 const w = window.width;
-const h = window.height;
 
 class ImageCropper extends PureComponent {
   constructor() {
@@ -27,6 +26,13 @@ class ImageCropper extends PureComponent {
   static propTypes = {
     imageUri: PropTypes.string.isRequired,
     setCropperParams: PropTypes.func.isRequired,
+    cropAreaWidth: PropTypes.number,
+    cropAreaHeight: PropTypes.number,
+  };
+
+  static defaultProps = {
+    cropAreaWidth: w,
+    cropAreaHeight: w,
   };
 
   static crop = params => {
@@ -35,7 +41,7 @@ class ImageCropper extends PureComponent {
       cropSize,
       positionX,
       positionY,
-      screenSize,
+      cropAreaSize,
       srcSize,
       fittedSize,
       scale,
@@ -46,12 +52,17 @@ class ImageCropper extends PureComponent {
       y: 0,
     };
 
-    const wScale = screenSize.w / scale;
+    const cropAreaW = cropAreaSize ? cropAreaSize.width : w;
+    const cropAreaH = cropAreaSize ? cropAreaSize.height : w;
+
+    const wScale = cropAreaW / scale;
+    const hScale = cropAreaH / scale;
+
     const percentCropperAreaW = getPercentDiffNumberFromNumber(wScale, fittedSize.w);
     const percentRestW = 100 - percentCropperAreaW;
     const hiddenAreaW = getPercentFromNumber(percentRestW, fittedSize.w);
 
-    const percentCropperAreaH = getPercentDiffNumberFromNumber(wScale, fittedSize.h);
+    const percentCropperAreaH = getPercentDiffNumberFromNumber(hScale, fittedSize.h);
     const percentRestH = 100 - percentCropperAreaH;
     const hiddenAreaH = getPercentFromNumber(percentRestH, fittedSize.h);
 
@@ -100,11 +111,6 @@ class ImageCropper extends PureComponent {
       const fittedSize = { w: 0, h: 0 };
       let scale = 1.01;
 
-      const screenSize = {
-        w,
-        h,
-      };
-
       if (width > height) {
         const ratio = w / height;
         fittedSize.w = width * ratio;
@@ -122,7 +128,6 @@ class ImageCropper extends PureComponent {
       this.setState(
         prevState => ({
           ...prevState,
-          screenSize,
           srcSize,
           fittedSize,
           minScale: scale,
@@ -157,15 +162,15 @@ class ImageCropper extends PureComponent {
 
   render() {
     const { loading, fittedSize, minScale } = this.state;
-    const { imageUri, ...restProps } = this.props;
+    const { imageUri, cropAreaWidth, cropAreaHeight, ...restProps } = this.props;
     const imageSrc = { uri: imageUri };
 
     return !loading ? (
       <ImageZoom
         ref={this.imageZoom}
         {...restProps}
-        cropWidth={w}
-        cropHeight={w}
+        cropWidth={cropAreaWidth}
+        cropHeight={cropAreaHeight}
         imageWidth={fittedSize.w}
         imageHeight={fittedSize.h}
         minScale={minScale}
