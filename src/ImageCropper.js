@@ -105,11 +105,11 @@ class ImageCropper extends PureComponent {
     const { imageUri } = this.props;
 
     Image.getSize(imageUri, (width, height) => {
-      const { setCropperParams } = this.props;
+      const { setCropperParams, cropAreaWidth, cropAreaHeight } = this.props;
 
       const srcSize = { w: width, h: height };
       const fittedSize = { w: 0, h: 0 };
-      let scale = 1.01;
+      let scale = 1.0001;
 
       if (width > height) {
         const ratio = w / height;
@@ -120,9 +120,16 @@ class ImageCropper extends PureComponent {
         fittedSize.w = w;
         fittedSize.h = height * ratio;
       } else if (width === height) {
-        scale = 1;
         fittedSize.w = w;
         fittedSize.h = w;
+      }
+
+      if (cropAreaWidth < cropAreaHeight || cropAreaWidth === cropAreaHeight) {
+        if (width < height) {
+          scale = Math.ceil((cropAreaWidth / fittedSize.w) * 10) / 10 + 0.0001;
+        } else {
+          scale = Math.ceil((cropAreaHeight / fittedSize.h) * 10) / 10 + 0.0001;
+        }
       }
 
       this.setState(

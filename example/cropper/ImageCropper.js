@@ -76,7 +76,12 @@ function (_PureComponent) {
       var positionX = _ref.positionX,
           positionY = _ref.positionY,
           scale = _ref.scale;
-      var setCropperParams = _this.props.setCropperParams;
+      var fittedSize = _this.state.fittedSize;
+      var _this$props = _this.props,
+          setCropperParams = _this$props.setCropperParams,
+          cropAreaWidth = _this$props.cropAreaWidth,
+          cropAreaHeight = _this$props.cropAreaHeight;
+      console.log('scale =>', scale, cropAreaWidth, cropAreaHeight, fittedSize);
 
       _this.setState(function (prevState) {
         return _objectSpread({}, prevState, {
@@ -101,7 +106,10 @@ function (_PureComponent) {
       var imageUri = this.props.imageUri;
 
       _reactNative.Image.getSize(imageUri, function (width, height) {
-        var setCropperParams = _this2.props.setCropperParams;
+        var _this2$props = _this2.props,
+            setCropperParams = _this2$props.setCropperParams,
+            cropAreaWidth = _this2$props.cropAreaWidth,
+            cropAreaHeight = _this2$props.cropAreaHeight;
         var srcSize = {
           w: width,
           h: height
@@ -110,7 +118,7 @@ function (_PureComponent) {
           w: 0,
           h: 0
         };
-        var scale = 1.01;
+        var scale = 1.0001;
 
         if (width > height) {
           var ratio = w / height;
@@ -122,9 +130,16 @@ function (_PureComponent) {
           fittedSize.w = w;
           fittedSize.h = height * _ratio;
         } else if (width === height) {
-          scale = 1;
           fittedSize.w = w;
           fittedSize.h = w;
+        }
+
+        if (cropAreaWidth < cropAreaHeight || cropAreaWidth === cropAreaHeight) {
+          if (width < height) {
+            scale = Math.ceil(cropAreaWidth / fittedSize.w * 10) / 10 + 0.0001;
+          } else {
+            scale = Math.ceil(cropAreaHeight / fittedSize.h * 10) / 10 + 0.0001;
+          }
         }
 
         _this2.setState(function (prevState) {
@@ -154,11 +169,11 @@ function (_PureComponent) {
           fittedSize = _this$state.fittedSize,
           minScale = _this$state.minScale;
 
-      var _this$props = this.props,
-          imageUri = _this$props.imageUri,
-          cropAreaWidth = _this$props.cropAreaWidth,
-          cropAreaHeight = _this$props.cropAreaHeight,
-          restProps = _objectWithoutProperties(_this$props, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
+      var _this$props2 = this.props,
+          imageUri = _this$props2.imageUri,
+          cropAreaWidth = _this$props2.cropAreaWidth,
+          cropAreaHeight = _this$props2.cropAreaHeight,
+          restProps = _objectWithoutProperties(_this$props2, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
 
       var imageSrc = {
         uri: imageUri
