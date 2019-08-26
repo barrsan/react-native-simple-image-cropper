@@ -34,7 +34,7 @@ import ImageCropper from 'react-native-simple-image-cropper';
 const window = Dimensions.get('window');
 const w = window.width;
 
-const IMAGE = 'https://picsum.photos/900/500';
+const IMAGE = 'https://picsum.photos/id/48/900/500';
 
 const CROP_AREA_WIDTH = w;
 const CROP_AREA_HEIGHT = w;
