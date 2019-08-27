@@ -111,7 +111,7 @@ class App extends React.Component {
         ) : null}
       </View>
     );
-	}
+  }
 }
 ```
 
