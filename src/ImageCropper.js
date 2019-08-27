@@ -126,11 +126,17 @@ class ImageCropper extends PureComponent {
 
       if (cropAreaWidth < cropAreaHeight || cropAreaWidth === cropAreaHeight) {
         if (width < height) {
-          scale = Math.ceil((cropAreaWidth / fittedSize.w) * 10) / 10 + 0.0001;
+          if (fittedSize.h < cropAreaHeight) {
+            scale = Math.ceil((cropAreaHeight / fittedSize.h) * 10) / 10 + 0.0001;
+          } else {
+            scale = Math.ceil((cropAreaWidth / fittedSize.w) * 10) / 10 + 0.0001;
+          }
         } else {
           scale = Math.ceil((cropAreaHeight / fittedSize.h) * 10) / 10 + 0.0001;
         }
       }
+
+      scale = scale < 1 ? 1.0001 : scale;
 
       this.setState(
         prevState => ({
