@@ -76,12 +76,7 @@ function (_PureComponent) {
       var positionX = _ref.positionX,
           positionY = _ref.positionY,
           scale = _ref.scale;
-      var fittedSize = _this.state.fittedSize;
-      var _this$props = _this.props,
-          setCropperParams = _this$props.setCropperParams,
-          cropAreaWidth = _this$props.cropAreaWidth,
-          cropAreaHeight = _this$props.cropAreaHeight;
-      console.log('scale =>', scale, cropAreaWidth, cropAreaHeight, fittedSize);
+      var setCropperParams = _this.props.setCropperParams;
 
       _this.setState(function (prevState) {
         return _objectSpread({}, prevState, {
@@ -136,11 +131,17 @@ function (_PureComponent) {
 
         if (cropAreaWidth < cropAreaHeight || cropAreaWidth === cropAreaHeight) {
           if (width < height) {
-            scale = Math.ceil(cropAreaWidth / fittedSize.w * 10) / 10 + 0.0001;
+            if (fittedSize.h < cropAreaHeight) {
+              scale = Math.ceil(cropAreaHeight / fittedSize.h * 10) / 10 + 0.0001;
+            } else {
+              scale = Math.ceil(cropAreaWidth / fittedSize.w * 10) / 10 + 0.0001;
+            }
           } else {
             scale = Math.ceil(cropAreaHeight / fittedSize.h * 10) / 10 + 0.0001;
           }
         }
+
+        scale = scale < 1 ? 1.0001 : scale;
 
         _this2.setState(function (prevState) {
           return _objectSpread({}, prevState, {
@@ -169,11 +170,11 @@ function (_PureComponent) {
           fittedSize = _this$state.fittedSize,
           minScale = _this$state.minScale;
 
-      var _this$props2 = this.props,
-          imageUri = _this$props2.imageUri,
-          cropAreaWidth = _this$props2.cropAreaWidth,
-          cropAreaHeight = _this$props2.cropAreaHeight,
-          restProps = _objectWithoutProperties(_this$props2, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
+      var _this$props = this.props,
+          imageUri = _this$props.imageUri,
+          cropAreaWidth = _this$props.cropAreaWidth,
+          cropAreaHeight = _this$props.cropAreaHeight,
+          restProps = _objectWithoutProperties(_this$props, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
 
       var imageSrc = {
         uri: imageUri
