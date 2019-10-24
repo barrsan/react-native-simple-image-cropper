@@ -12,9 +12,7 @@
 
 ---
 
-## Getting Started
-
-### Installation
+## Installation
 
 **Version 2**
 
@@ -30,6 +28,7 @@ yarn add react-native-simple-image-cropper
 
 ⚠️️⚠️⚠️ This library use ImageEditor from React Native. Since ImageEditor was extracted from React Native core, you also need to install [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor).
 
+---
 
 **Version 1** *(Used ImageEditor from React Native core)*
 
@@ -43,7 +42,9 @@ or
 yarn add react-native-simple-image-cropper@^1.1.2
 ```
 
-### Usage
+---
+
+## Usage
 
 ```javascript
 import React from 'react';
