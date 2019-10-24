@@ -13,6 +13,8 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _reactNativeImagePanZoom = _interopRequireDefault(require("react-native-image-pan-zoom"));
 
+var _imageEditor = _interopRequireDefault(require("@react-native-community/image-editor"));
+
 var _percentCalculator = require("./helpers/percentCalculator");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -259,7 +261,7 @@ ImageCropper.crop = function (params) {
     }
   };
   return new Promise(function (resolve, reject) {
-    return _reactNative.ImageEditor.cropImage(imageUri, cropData, resolve, reject);
+    return _imageEditor.default.cropImage(imageUri, cropData).then(resolve).catch(reject);
   });
 };
 

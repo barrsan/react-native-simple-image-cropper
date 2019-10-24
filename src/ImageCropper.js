@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Image, ImageEditor, Dimensions } from 'react-native';
+import { Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import ImageZoom from 'react-native-image-pan-zoom';
+import ImageEditor from '@react-native-community/image-editor';
 import { getPercentFromNumber, getPercentDiffNumberFromNumber } from './helpers/percentCalculator';
 
 const window = Dimensions.get('window');
@@ -97,7 +98,9 @@ class ImageCropper extends PureComponent {
     };
 
     return new Promise((resolve, reject) =>
-      ImageEditor.cropImage(imageUri, cropData, resolve, reject),
+      ImageEditor.cropImage(imageUri, cropData)
+        .then(resolve)
+        .catch(reject),
     );
   };
 
