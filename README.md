@@ -5,7 +5,6 @@
 <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase.gif" alt="showcase" width="89%">  |  <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase2.gif" alt="showcase" width="96%"> |
 :---------------:|:----------------:|
 
----
 
 **[DEMO 1](https://snack.expo.io/@barrsan/react-native-simple-image-cropper-demo)**
 
@@ -17,6 +16,8 @@
 
 ### Installation
 
+**Version 2**
+
 ```bash
 npm i react-native-simple-image-cropper --save
 ```
@@ -27,11 +28,26 @@ or
 yarn add react-native-simple-image-cropper
 ```
 
+⚠️️⚠️⚠️ This library use ImageEditor from React Native. Since ImageEditor was extracted from React Native core, you also need to install [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor).
+
+
+**Version 1** *(Used ImageEditor from React Native core)*
+
+```bash
+npm i react-native-simple-image-cropper@^1.1.2 --save
+```
+
+or
+
+```bash
+yarn add react-native-simple-image-cropper@^1.1.2
+```
+
 ### Usage
 
 ```javascript
 import React from 'react';
-import { Dimensions, StyleSheet, View, Image, Button } from 'react-native';
+import { Dimensions, View, Image, Button } from 'react-native';
 import ImageCropper from 'react-native-simple-image-cropper';
 
 const window = Dimensions.get('window');
@@ -41,18 +57,6 @@ const IMAGE = 'https://picsum.photos/id/48/900/500';
 
 const CROP_AREA_WIDTH = w;
 const CROP_AREA_HEIGHT = w;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-
-  imagePreview: {
-    width: 100,
-    height: 100,
-  },
-});
 
 class App extends React.Component {	
   state = {
@@ -101,7 +105,7 @@ class App extends React.Component {
     const src = { uri: croppedImage };
     
     return (
-      <View style={styles.container}>
+      <View>
         <ImageCropper
           imageUri={IMAGE}
           cropAreaWidth={CROP_AREA_WIDTH}
@@ -110,7 +114,7 @@ class App extends React.Component {
         />
         <Button onPress={this.handleCropPress} title="Crop Image" color="blue" />
         {croppedImage ? (
-          <Image style={styles.imagePreview} source={src} />
+          <Image source={src} />
         ) : null}
       </View>
     );
