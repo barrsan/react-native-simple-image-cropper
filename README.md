@@ -111,7 +111,7 @@ class App extends React.Component {
           cropAreaHeight={CROP_AREA_HEIGHT}
           setCropperParams={this.setCropperParams}
         />
-        <Button onPress={this.handleCropPress} title="Crop Image" color="blue" />
+        <Button onPress={this.handlePress} title="Crop Image" color="blue" />
         {croppedImage ? (
           <Image source={src} />
         ) : null}
