@@ -105,6 +105,17 @@ class ImageCropper extends PureComponent {
   };
 
   componentDidMount() {
+    this.init();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { imageUri } = this.props;
+    if (imageUri && prevProps.imageUri !== imageUri) {
+      this.init();
+    }
+  }
+
+  init = () => {
     const { imageUri } = this.props;
 
     Image.getSize(imageUri, (width, height) => {
@@ -160,7 +171,7 @@ class ImageCropper extends PureComponent {
         },
       );
     });
-  }
+  };
 
   handleMove = ({ positionX, positionY, scale }) => {
     const { setCropperParams } = this.props;

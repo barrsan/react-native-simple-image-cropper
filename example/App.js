@@ -7,6 +7,7 @@ const w = window.width;
 // const h = window.height;
 
 const IMAGE = 'https://picsum.photos/id/48/900/500';
+const IMAGE2 = 'https://picsum.photos/id/215/900/500';
 // const IMAGE = 'https://picsum.photos/id/48/500/900';
 // const IMAGE = 'https://picsum.photos/id/48/900/900';
 
@@ -23,6 +24,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+  },
+
+  buttonChangeImageContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
   },
 
   imagePreviewContainer: {
@@ -42,6 +49,7 @@ const styles = StyleSheet.create({
 
 class App extends React.Component {
   state = {
+    image: IMAGE,
     cropperParams: {},
     croppedImage: '',
   };
@@ -53,7 +61,15 @@ class App extends React.Component {
     }));
   };
 
+  handleChangeImagePress = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      image: IMAGE2,
+    }));
+  };
+
   handlePress = async () => {
+    const { image } = this.state;
     const { cropperParams } = this.state;
     const cropSize = {
       width: CROP_AREA_WIDTH / 2,
@@ -68,7 +84,7 @@ class App extends React.Component {
     try {
       const result = await ImageCropper.crop({
         ...cropperParams,
-        imageUri: IMAGE,
+        imageUri: image,
         cropSize,
         cropAreaSize,
       });
@@ -82,19 +98,22 @@ class App extends React.Component {
   };
 
   render() {
-    const { croppedImage } = this.state;
+    const { croppedImage, image } = this.state;
     const src = { uri: croppedImage };
 
     return (
       <View style={styles.container}>
         <ImageCropper
-          imageUri={IMAGE}
+          imageUri={image}
           cropAreaWidth={CROP_AREA_WIDTH}
           cropAreaHeight={CROP_AREA_HEIGHT}
           setCropperParams={this.setCropperParams}
         />
         <View style={styles.buttonContainer}>
           <Button onPress={this.handlePress} title="Crop Image" color="blue" />
+        </View>
+        <View style={styles.buttonChangeImageContainer}>
+          <Button onPress={this.handleChangeImagePress} title="Change Image" color="blue" />
         </View>
         {croppedImage ? (
           <View style={styles.imagePreviewContainer}>

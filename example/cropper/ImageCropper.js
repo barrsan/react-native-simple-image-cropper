@@ -74,39 +74,14 @@ function (_PureComponent) {
       loading: true
     };
 
-    _this.handleMove = function (_ref) {
-      var positionX = _ref.positionX,
-          positionY = _ref.positionY,
-          scale = _ref.scale;
-      var setCropperParams = _this.props.setCropperParams;
-
-      _this.setState(function (prevState) {
-        return _objectSpread({}, prevState, {
-          positionX: positionX,
-          positionY: positionY,
-          scale: scale
-        });
-      }, function () {
-        return setCropperParams(_this.state);
-      });
-    };
-
-    _this.imageZoom = _react.default.createRef();
-    return _this;
-  }
-
-  _createClass(ImageCropper, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      var imageUri = this.props.imageUri;
+    _this.init = function () {
+      var imageUri = _this.props.imageUri;
 
       _reactNative.Image.getSize(imageUri, function (width, height) {
-        var _this2$props = _this2.props,
-            setCropperParams = _this2$props.setCropperParams,
-            cropAreaWidth = _this2$props.cropAreaWidth,
-            cropAreaHeight = _this2$props.cropAreaHeight;
+        var _this$props = _this.props,
+            setCropperParams = _this$props.setCropperParams,
+            cropAreaWidth = _this$props.cropAreaWidth,
+            cropAreaHeight = _this$props.cropAreaHeight;
         var srcSize = {
           w: width,
           h: height
@@ -145,7 +120,7 @@ function (_PureComponent) {
 
         scale = scale < 1 ? 1.0001 : scale;
 
-        _this2.setState(function (prevState) {
+        _this.setState(function (prevState) {
           return _objectSpread({}, prevState, {
             srcSize: srcSize,
             fittedSize: fittedSize,
@@ -153,16 +128,52 @@ function (_PureComponent) {
             loading: false
           });
         }, function () {
-          _this2.imageZoom.current.centerOn({
+          _this.imageZoom.current.centerOn({
             x: 0,
             y: 0,
             scale: scale,
             duration: 0
           });
 
-          setCropperParams(_this2.state);
+          setCropperParams(_this.state);
         });
       });
+    };
+
+    _this.handleMove = function (_ref) {
+      var positionX = _ref.positionX,
+          positionY = _ref.positionY,
+          scale = _ref.scale;
+      var setCropperParams = _this.props.setCropperParams;
+
+      _this.setState(function (prevState) {
+        return _objectSpread({}, prevState, {
+          positionX: positionX,
+          positionY: positionY,
+          scale: scale
+        });
+      }, function () {
+        return setCropperParams(_this.state);
+      });
+    };
+
+    _this.imageZoom = _react.default.createRef();
+    return _this;
+  }
+
+  _createClass(ImageCropper, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.init();
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var imageUri = this.props.imageUri;
+
+      if (imageUri && prevProps.imageUri !== imageUri) {
+        this.init();
+      }
     }
   }, {
     key: "render",
@@ -172,11 +183,11 @@ function (_PureComponent) {
           fittedSize = _this$state.fittedSize,
           minScale = _this$state.minScale;
 
-      var _this$props = this.props,
-          imageUri = _this$props.imageUri,
-          cropAreaWidth = _this$props.cropAreaWidth,
-          cropAreaHeight = _this$props.cropAreaHeight,
-          restProps = _objectWithoutProperties(_this$props, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
+      var _this$props2 = this.props,
+          imageUri = _this$props2.imageUri,
+          cropAreaWidth = _this$props2.cropAreaWidth,
+          cropAreaHeight = _this$props2.cropAreaHeight,
+          restProps = _objectWithoutProperties(_this$props2, ["imageUri", "cropAreaWidth", "cropAreaHeight"]);
 
       var imageSrc = {
         uri: imageUri
