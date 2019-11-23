@@ -12,7 +12,7 @@
   "dependencies": {
     "@react-native-community/image-editor": "^2.1.0",
     "react": "16.9.0",
-    "react-native": "0.61.2",
+    "react-native": "^0.61.4",
     "react-native-image-pan-zoom": "^2.1.11"
   },
   "devDependencies": {
