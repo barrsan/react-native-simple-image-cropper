@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Image, ImageEditor, Dimensions } from 'react-native';
+import { Image, ImageEditor, Dimensions, ActivityIndicator, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import ImageZoom from 'react-native-image-pan-zoom';
 import { getPercentFromNumber, getPercentDiffNumberFromNumber } from './helpers/percentCalculator';
@@ -191,7 +191,23 @@ class ImageCropper extends PureComponent {
       >
         <Image style={{ width: fittedSize.w, height: fittedSize.h }} source={imageSrc} />
       </ImageZoom>
-    ) : null;
+    )
+     : 
+    (
+        <View style={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          opacity: 0.8,
+          position: 'absolute',
+          backgroundColor: '#FFF',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <ActivityIndicator style={{ padding: 10 }} />
+          <Text>Loading...</Text>
+        </View>
+    );
   }
 }
 
