@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
-import ImageCropper from './cropper';
+import { ImageCropper } from 'react-native-simple-image-cropper'; // eslint-disable-line
 
 const window = Dimensions.get('window');
 const w = window.width;
+const h = window.width;
 // const h = window.height;
 
 const IMAGE = 'https://picsum.photos/id/48/900/500';
@@ -12,7 +13,7 @@ const IMAGE2 = 'https://picsum.photos/id/215/900/500';
 // const IMAGE = 'https://picsum.photos/id/48/900/900';
 
 const CROP_AREA_WIDTH = w;
-const CROP_AREA_HEIGHT = w;
+const CROP_AREA_HEIGHT = h;
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderColor: 'white',
     opacity: 0.8,
+    zIndex: 3,
   },
 
   imagePreview: {
@@ -64,7 +66,7 @@ class App extends React.Component {
   handleChangeImagePress = () => {
     this.setState(prevState => ({
       ...prevState,
-      image: IMAGE2,
+      image: prevState.image === IMAGE ? IMAGE2 : IMAGE,
     }));
   };
 
@@ -113,11 +115,19 @@ class App extends React.Component {
           <Button onPress={this.handlePress} title="Crop Image" color="blue" />
         </View>
         <View style={styles.buttonChangeImageContainer}>
-          <Button onPress={this.handleChangeImagePress} title="Change Image" color="blue" />
+          <Button
+            onPress={this.handleChangeImagePress}
+            title="Change Image"
+            color="blue"
+          />
         </View>
         {croppedImage ? (
           <View style={styles.imagePreviewContainer}>
-            <Image resizeMode="cover" style={styles.imagePreview} source={src} />
+            <Image
+              resizeMode="cover"
+              style={styles.imagePreview}
+              source={src}
+            />
           </View>
         ) : null}
       </View>
