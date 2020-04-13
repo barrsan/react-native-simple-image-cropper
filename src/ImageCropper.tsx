@@ -1,4 +1,4 @@
-import React, { PureComponent, RefObject } from 'react';
+import React, { PureComponent } from 'react';
 import { Image, Dimensions } from 'react-native';
 import ImageEditor from '@react-native-community/image-editor';
 import ImageViewer from './ImageViewer';
@@ -24,6 +24,7 @@ interface IState {
   adjustedHeight: number;
   loading: boolean;
   fittedSize: ISizeData;
+  prevImageUri: string;
 }
 
 const window = Dimensions.get('window');
@@ -91,18 +92,18 @@ class ImageCropper extends PureComponent<IProps, IState> {
     const sizeW = getPercentFromNumber(percentCropperAreaW, srcSize.width);
     const sizeH = getPercentFromNumber(percentCropperAreaH, srcSize.height);
 
-    offset.x = offsetW;
-    offset.y = offsetH;
+    offset.x = Math.floor(offsetW);
+    offset.y = Math.floor(offsetH);
 
     const cropData = {
       offset,
       size: {
-        width: sizeW,
-        height: sizeH,
+        width: Math.round(sizeW),
+        height: Math.round(sizeH),
       },
       displaySize: {
-        width: cropSize.width,
-        height: cropSize.height,
+        width: Math.round(cropSize.width),
+        height: Math.round(cropSize.height),
       },
     };
 
@@ -113,12 +114,21 @@ class ImageCropper extends PureComponent<IProps, IState> {
     );
   };
 
-  imageViewer: RefObject<ImageViewer> = React.createRef();
-
   static defaultProps = {
     cropAreaWidth: w,
     cropAreaHeight: w,
   };
+
+  static getDerivedStateFromProps(props: IProps, state: IState) {
+    if (props.imageUri !== state.prevImageUri) {
+      return {
+        prevImageUri: props.imageUri,
+        loading: true,
+      };
+    }
+
+    return null;
+  }
 
   state = {
     positionX: 0,
@@ -132,6 +142,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       width: 0,
       height: 0,
     },
+    prevImageUri: '',
   };
 
   componentDidMount() {
@@ -196,7 +207,6 @@ class ImageCropper extends PureComponent<IProps, IState> {
             loading: false,
           }),
           () => {
-            this.imageViewer.current!.reset();
             setCropperParams(this.state);
           },
         );
@@ -223,15 +233,14 @@ class ImageCropper extends PureComponent<IProps, IState> {
     const { loading, fittedSize, minScale } = this.state;
     const { imageUri, cropAreaWidth, cropAreaHeight } = this.props;
 
-    const areaWidth = Math.round(cropAreaWidth!);
-    const areaHeight = Math.round(cropAreaHeight!);
+    const areaWidth = cropAreaWidth!;
+    const areaHeight = cropAreaHeight!;
 
-    const imageWidth = Math.round(fittedSize.width);
-    const imageHeight = Math.round(fittedSize.height);
+    const imageWidth = fittedSize.width;
+    const imageHeight = fittedSize.height;
 
     return !loading ? (
       <ImageViewer
-        ref={this.imageViewer}
         image={imageUri}
         areaWidth={areaWidth}
         areaHeight={areaHeight}
@@ -239,6 +248,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
         imageHeight={imageHeight}
         minScale={minScale}
         onMove={this.handleMove}
+        imageBackdropColor="green"
       />
     ) : null;
   }
