@@ -7,14 +7,9 @@ const w = window.width;
 const h = window.width;
 // const h = window.height;
 
-// const IMAGE = 'https://picsum.photos/id/48/900/900';
-// const IMAGE2 = 'https://picsum.photos/id/215/900/500';
-
-// const IMAGE = 'https://picsum.photos/id/215/900/500';
-const IMAGE2 = 'https://picsum.photos/id/48/900/900';
-
-// const IMAGE = 'https://picsum.photos/id/48/900/500';
-const IMAGE = 'https://picsum.photos/id/48/500/900';
+// const IMAGE = 'https://picsum.photos/id/48/500/900';
+const IMAGE = 'https://picsum.photos/id/48/900/900';
+const IMAGE2 = 'https://picsum.photos/id/215/900/500';
 
 const CROP_AREA_WIDTH = w;
 const CROP_AREA_HEIGHT = h;
