@@ -1,11 +1,14 @@
 {
   "name": "react-native-simple-image-cropper",
-  "version": "2.0.2",
+  "version": "3.0.7",
   "description": "",
   "main": "build/index.js",
+  "types": "build/types/index.d.ts",
   "scripts": {
-    "dev": "babel src -d example/cropper --watch",
-    "build": "babel src -d build"
+    "dev": "yarn tsc --watch",
+    "build": "rm -rf ./build/* && tsc",
+    "watch:example": "concurrently \"yarn dev\" \"yarn cpx 'src/**/*' 'example/node_modules/react-native-simple-image-cropper' --watch\"",
+    "build:example": "cpx 'build/**/*' 'example/node_modules/react-native-simple-image-cropper'"
   },
   "repository": {
     "type": "git",
@@ -17,27 +20,31 @@
     "@react-native-community/image-editor": "*",
     "react": "*",
     "react-native": "*",
-    "react-native-image-pan-zoom": "*"
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*",
+    "react-native-redash": "*"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/preset-env": "^7.3.1",
-    "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.1",
+    "@react-native-community/image-editor": "^2.3.0",
+    "@types/react": "^16.9.34",
+    "@types/react-native": "^0.62.2",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "concurrently": "^5.1.0",
+    "cpx": "^1.5.0",
     "eslint": "^5.14.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-react-native": "^3.6.0",
+    "eslint-config-airbnb-typescript": "^4.0.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
     "prettier": "^1.16.4",
-    "prop-types": "^15.7.2"
-  },
-  "dependencies": {
-    "@react-native-community/image-editor": "*",
-    "react-native-image-pan-zoom": "*"
+    "react": "^16.13.1",
+    "react-native": "^0.62.2",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-reanimated": "^1.8.0",
+    "react-native-redash": "^12.0.2",
+    "typescript": "^3.8.3"
   }
 }

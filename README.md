@@ -1,5 +1,7 @@
 # react-native-simple-image-cropper
 
+Simple react-native component for image cropping.
+
 ## Show Case
 
 <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase.gif" alt="showcase" width="89%">  |  <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase2.gif" alt="showcase" width="96%"> |
@@ -14,8 +16,6 @@
 
 ## Installation
 
-**Version 2**
-
 ```bash
 npm i react-native-simple-image-cropper --save
 ```
@@ -26,19 +26,19 @@ or
 yarn add react-native-simple-image-cropper
 ```
 
-> ⚠️️⚠️⚠️ This library use ImageEditor from React Native. Since ImageEditor was extracted from React Native core, you also need to install [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor).
-
-**Version 1** *(Used ImageEditor from React Native core)*
+## Installing dependencies
 
 ```bash
-npm i react-native-simple-image-cropper@^1.1.2 --save
+npm i react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor --save
 ```
 
 or
 
 ```bash
-yarn add react-native-simple-image-cropper@^1.1.2
+yarn add react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor
 ```
+
+Libraries installation details: [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor), [react-native-gesture-handler](https://software-mansion.github.io/react-native-gesture-handler/docs/getting-started.html), [react-native-reanimated](https://software-mansion.github.io/react-native-reanimated/getting-started.html), [react-native-redash](https://wcandillon.github.io/react-native-redash/readme).
 
 ---
 
@@ -109,6 +109,8 @@ class App extends React.Component {
           imageUri={IMAGE}
           cropAreaWidth={CROP_AREA_WIDTH}
           cropAreaHeight={CROP_AREA_HEIGHT}
+          containerColor="black"
+          areaColor="black"
           setCropperParams={this.setCropperParams}
         />
         <Button onPress={this.handlePress} title="Crop Image" color="blue" />
@@ -121,9 +123,11 @@ class App extends React.Component {
 }
 ```
 
-## Credits
+## Versions
 
-Based from [react-native-image-zoom](https://github.com/ascoders/react-native-image-zoom).
+[Version 2](https://github.com/barrsan/react-native-simple-image-cropper/tree/2.x)
+
+[Version 1](https://github.com/barrsan/react-native-simple-image-cropper/tree/1.x)
 
 ## License
 
