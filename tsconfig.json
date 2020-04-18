@@ -19,7 +19,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedParameters": true,
     "noImplicitThis": true,
-    "esModuleInterop":true
+    "esModuleInterop": true
   },
   "include": ["src"]
 }

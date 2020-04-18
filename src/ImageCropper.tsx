@@ -12,6 +12,8 @@ interface IProps {
   imageUri: string;
   cropAreaWidth?: number;
   cropAreaHeight?: number;
+  containerColor?: string;
+  areaColor?: string;
   setCropperParams: (params: IState) => void;
 }
 
@@ -29,6 +31,13 @@ interface IState {
 
 const window = Dimensions.get('window');
 const w = window.width;
+
+const defaultProps = {
+  cropAreaWidth: w,
+  cropAreaHeight: w,
+  containerColor: 'black',
+  areaColor: 'black',
+};
 
 class ImageCropper extends PureComponent<IProps, IState> {
   static crop = (params: ICropParams) => {
@@ -114,10 +123,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
     );
   };
 
-  static defaultProps = {
-    cropAreaWidth: w,
-    cropAreaHeight: w,
-  };
+  static defaultProps = defaultProps;
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
     if (props.imageUri !== state.prevImageUri) {
@@ -231,7 +237,13 @@ class ImageCropper extends PureComponent<IProps, IState> {
 
   render() {
     const { loading, fittedSize, minScale } = this.state;
-    const { imageUri, cropAreaWidth, cropAreaHeight } = this.props;
+    const {
+      imageUri,
+      cropAreaWidth,
+      cropAreaHeight,
+      containerColor,
+      areaColor,
+    } = this.props;
 
     const areaWidth = cropAreaWidth!;
     const areaHeight = cropAreaHeight!;
@@ -248,7 +260,8 @@ class ImageCropper extends PureComponent<IProps, IState> {
         imageHeight={imageHeight}
         minScale={minScale}
         onMove={this.handleMove}
-        imageBackdropColor="green"
+        containerColor={containerColor}
+        imageBackdropColor={areaColor}
       />
     ) : null;
   }

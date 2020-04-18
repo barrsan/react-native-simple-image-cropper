@@ -7,7 +7,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import Animated, { Easing } from 'react-native-reanimated';
-import { timing, delay } from 'react-native-redash';
+import { timing } from 'react-native-redash';
 import { IImageViewerData } from './types';
 
 interface IProps {
@@ -72,8 +72,6 @@ class ImageViewer extends Component<IProps> {
 
   scale: Animated.Value<number>;
 
-  isAlignEnabled: Animated.Value<number>;
-
   onTapGestureEvent: (...args: any[]) => void;
 
   onPanGestureEvent: (...args: any[]) => void;
@@ -93,7 +91,6 @@ class ImageViewer extends Component<IProps> {
     this.translateX = new Value(0);
     this.translateY = new Value(0);
     this.scale = new Value(minScale);
-    this.isAlignEnabled = new Value(1);
 
     const timingDefaultParams = {
       duration: 200,
@@ -127,14 +124,6 @@ class ImageViewer extends Component<IProps> {
       divide(sub(multiply(viewerImageHeight, this.scale), viewerAreaHeight), 2),
       this.scale,
     );
-
-    const startHorizontalMax =
-      (imageWidth * minScale - areaWidth) / 2 / minScale;
-    const startVerticalMax =
-      (imageHeight * minScale - areaHeight) / 2 / minScale;
-
-    const startNegHorizontalMax = startHorizontalMax * -1;
-    const startNegVerticalMax = startVerticalMax * -1;
 
     const scaledWidth = multiply(viewerImageWidth, this.scale);
     const scaledHeight = multiply(viewerImageHeight, this.scale);
@@ -208,66 +197,11 @@ class ImageViewer extends Component<IProps> {
               set(negMaxY, multiply(verticalMax, new Value(-1))),
             ]),
 
-            cond(eq(this.isAlignEnabled, 0), [
-              cond(
-                greaterThan(this.translateX, new Value(startHorizontalMax)),
-                set(
-                  this.translateX,
-                  timing({
-                    from: this.translateX,
-                    to: startHorizontalMax,
-                    ...timingDefaultParams,
-                  }),
-                ),
-              ),
-
-              cond(
-                lessThan(this.translateX, new Value(startNegHorizontalMax)),
-                set(
-                  this.translateX,
-                  timing({
-                    from: this.translateX,
-                    to: startNegHorizontalMax,
-                    ...timingDefaultParams,
-                  }),
-                ),
-              ),
-
-              cond(
-                greaterThan(this.translateY, new Value(startVerticalMax)),
-                set(
-                  this.translateY,
-                  timing({
-                    from: this.translateY,
-                    to: startVerticalMax,
-                    ...timingDefaultParams,
-                  }),
-                ),
-              ),
-
-              cond(
-                lessThan(this.translateY, new Value(startNegVerticalMax)),
-                set(
-                  this.translateY,
-                  timing({
-                    from: this.translateY,
-                    to: startNegVerticalMax,
-                    ...timingDefaultParams,
-                  }),
-                ),
-              ),
-
-              delay(set(offsetX, this.translateX), 200),
-              delay(set(offsetY, this.translateY), 200),
-              delay(set(this.isAlignEnabled, 1), 200),
-            ]),
-
             cond(
               and(
                 eq(state, State.END),
                 greaterOrEq(scaledWidth, viewerAreaWidth),
                 greaterOrEq(this.scale, new Value(minScale)),
-                eq(this.isAlignEnabled, 1),
               ),
               cond(
                 and(
@@ -308,7 +242,6 @@ class ImageViewer extends Component<IProps> {
                 eq(state, State.END),
                 greaterOrEq(scaledHeight, viewerAreaHeight),
                 greaterOrEq(this.scale, new Value(minScale)),
-                eq(this.isAlignEnabled, 1),
               ),
               cond(
                 and(
@@ -362,30 +295,21 @@ class ImageViewer extends Component<IProps> {
         nativeEvent: ({ scale, state }: { scale: number; state: State }) =>
           block([
             cond(
-              eq(state, State.ACTIVE),
+              and(
+                eq(state, State.ACTIVE),
+                greaterOrEq(multiply(offsetZ, scale), minScale),
+              ),
               set(this.scale, multiply(offsetZ, scale)),
             ),
 
             cond(eq(state, State.END), [
               set(offsetZ, this.scale),
 
-              cond(
-                lessThan(this.scale, new Value(minScale)),
-                cond(eq(viewerImageWidth, viewerImageHeight), [
-                  set(maxX, new Value(0)),
-                  set(negMaxX, new Value(0)),
+              set(maxX, horizontalMax),
+              set(negMaxX, multiply(horizontalMax, new Value(-1))),
 
-                  set(maxY, new Value(0)),
-                  set(negMaxY, new Value(0)),
-                ]),
-                [
-                  set(maxX, horizontalMax),
-                  set(negMaxX, multiply(horizontalMax, new Value(-1))),
-
-                  set(maxY, verticalMax),
-                  set(negMaxY, multiply(verticalMax, new Value(-1))),
-                ],
-              ),
+              set(maxY, verticalMax),
+              set(negMaxY, multiply(verticalMax, new Value(-1))),
             ]),
 
             cond(
@@ -403,25 +327,6 @@ class ImageViewer extends Component<IProps> {
                     ...timingDefaultParams,
                   }),
                 ),
-              ],
-            ),
-
-            cond(
-              and(
-                eq(state, State.END),
-                lessThan(this.scale, new Value(minScale)),
-              ),
-              [
-                set(offsetZ, new Value(minScale)),
-                set(
-                  this.scale,
-                  timing({
-                    from: this.scale,
-                    to: minScale,
-                    ...timingDefaultParams,
-                  }),
-                ),
-                set(this.isAlignEnabled, 0),
               ],
             ),
           ]),
