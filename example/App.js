@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
-import { ImageCropper } from 'react-native-simple-image-cropper'; // eslint-disable-line
+import ImageCropper from 'react-native-simple-image-cropper'; // eslint-disable-line
 
 const window = Dimensions.get('window');
 const w = window.width;
