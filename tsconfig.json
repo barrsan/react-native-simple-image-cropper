@@ -4,8 +4,8 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "jsx": "react",
-    "lib": ["ES2017", "DOM"],
-    "target": "ES2015",
+    "lib": ["ES6", "ES2017", "DOM"],
+    "target": "ES5",
     "module": "CommonJS",
     "moduleResolution": "Node",
     "noEmitOnError": true,
@@ -18,7 +18,8 @@
     "noUnusedLocals": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedParameters": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "esModuleInterop":true
   },
   "include": ["src"]
 }

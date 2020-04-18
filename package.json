@@ -1,12 +1,14 @@
 {
   "name": "react-native-simple-image-cropper",
-  "version": "3.0.0",
+  "version": "3.0.5",
   "description": "",
   "main": "build/index.js",
+  "types": "build/types/index.d.ts",
   "scripts": {
     "dev": "yarn tsc --watch",
-    "build": "rm -rf ./build/* && tsc -p tsconfig.json",
-    "watch:example": "concurrently \"yarn dev\" \"yarn cpx 'src/**/*' 'example/node_modules/react-native-simple-image-cropper' --watch\""
+    "build": "rm -rf ./build/* && tsc",
+    "watch:example": "concurrently \"yarn dev\" \"yarn cpx 'src/**/*' 'example/node_modules/react-native-simple-image-cropper' --watch\"",
+    "build:example": "cpx 'build/**/*' 'example/node_modules/react-native-simple-image-cropper'"
   },
   "repository": {
     "type": "git",
