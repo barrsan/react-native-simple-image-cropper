@@ -9,13 +9,16 @@ export interface IImageViewerData {
   scale: number;
 }
 
-export interface ICropParams {
-  imageUri: string;
-  cropSize: ISizeData;
+export interface ICropperParams {
   positionX: number;
   positionY: number;
-  cropAreaSize: ISizeData;
+  scale: number;
   srcSize: ISizeData;
   fittedSize: ISizeData;
-  scale: number;
+}
+
+export interface ICropParams extends ICropperParams {
+  cropSize: ISizeData;
+  cropAreaSize: ISizeData;
+  imageUri: string;
 }
