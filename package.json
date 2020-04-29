@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-image-cropper",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
