@@ -3,7 +3,7 @@
   "version": "3.0.7",
   "description": "",
   "main": "build/index.js",
-  "types": "build/types/index.d.ts",
+  "types": "build/index.d.ts",
   "scripts": {
     "dev": "yarn tsc --watch",
     "build": "rm -rf ./build/* && tsc",

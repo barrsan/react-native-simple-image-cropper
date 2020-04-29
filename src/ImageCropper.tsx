@@ -17,7 +17,7 @@ interface IProps {
   setCropperParams: (params: IState) => void;
 }
 
-interface IState {
+export interface IState {
   positionX: number;
   positionY: number;
   width: number;
@@ -40,7 +40,7 @@ const defaultProps = {
 };
 
 class ImageCropper extends PureComponent<IProps, IState> {
-  static crop = (params: ICropParams) => {
+  static crop = (params: ICropParams): Promise<string | null | undefined> => {
     const {
       imageUri,
       cropSize,
