@@ -128,6 +128,99 @@ class ImageViewer extends Component<IProps> {
     const scaledWidth = multiply(viewerImageWidth, this.scale);
     const scaledHeight = multiply(viewerImageHeight, this.scale);
 
+    const setBoundaries = () =>
+      block([
+        set(maxX, horizontalMax),
+        set(negMaxX, multiply(horizontalMax, new Value(-1))),
+
+        set(maxY, verticalMax),
+        set(negMaxY, multiply(verticalMax, new Value(-1))),
+      ]);
+
+    const alignAxisX = (state: State) =>
+      cond(
+        and(
+          eq(state, State.END),
+          greaterOrEq(scaledWidth, viewerAreaWidth),
+          greaterOrEq(this.scale, new Value(minScale)),
+        ),
+        cond(
+          and(
+            lessThan(this.translateX, negMaxX),
+            greaterOrEq(this.scale, new Value(minScale)),
+          ),
+          [
+            set(
+              this.translateX,
+              timing({
+                from: this.translateX,
+                to: negMaxX,
+                ...timingDefaultParams,
+              }),
+            ),
+          ],
+          cond(
+            and(
+              greaterThan(this.translateX, maxX),
+              greaterOrEq(this.scale, new Value(minScale)),
+            ),
+            [
+              set(
+                this.translateX,
+                timing({
+                  from: this.translateX,
+                  to: maxX,
+                  ...timingDefaultParams,
+                }),
+              ),
+            ],
+          ),
+        ),
+      );
+
+    const alignAxisY = (state: State) =>
+      cond(
+        and(
+          eq(state, State.END),
+          greaterOrEq(scaledHeight, viewerAreaHeight),
+          greaterOrEq(this.scale, new Value(minScale)),
+        ),
+        cond(
+          and(
+            lessThan(this.translateY, negMaxY),
+            greaterOrEq(this.scale, new Value(minScale)),
+          ),
+          [
+            set(negMaxY, multiply(verticalMax, new Value(-1))),
+            set(
+              this.translateY,
+              timing({
+                from: this.translateY,
+                to: negMaxY,
+                ...timingDefaultParams,
+              }),
+            ),
+          ],
+          cond(
+            and(
+              greaterThan(this.translateY, maxY),
+              greaterOrEq(this.scale, new Value(minScale)),
+            ),
+            [
+              set(maxY, verticalMax),
+              set(
+                this.translateY,
+                timing({
+                  from: this.translateY,
+                  to: maxY,
+                  ...timingDefaultParams,
+                }),
+              ),
+            ],
+          ),
+        ),
+      );
+
     this.onTapGestureEvent = event([
       {
         nativeEvent: ({ state }: { state: State }) =>
@@ -190,94 +283,12 @@ class ImageViewer extends Component<IProps> {
                 add(divide(translationY, this.scale), offsetY),
               ),
 
-              set(maxX, horizontalMax),
-              set(negMaxX, multiply(horizontalMax, new Value(-1))),
-
-              set(maxY, verticalMax),
-              set(negMaxY, multiply(verticalMax, new Value(-1))),
+              setBoundaries(),
             ]),
 
-            cond(
-              and(
-                eq(state, State.END),
-                greaterOrEq(scaledWidth, viewerAreaWidth),
-                greaterOrEq(this.scale, new Value(minScale)),
-              ),
-              cond(
-                and(
-                  lessThan(this.translateX, negMaxX),
-                  greaterOrEq(this.scale, new Value(minScale)),
-                ),
-                [
-                  set(
-                    this.translateX,
-                    timing({
-                      from: this.translateX,
-                      to: negMaxX,
-                      ...timingDefaultParams,
-                    }),
-                  ),
-                ],
-                cond(
-                  and(
-                    greaterThan(this.translateX, maxX),
-                    greaterOrEq(this.scale, new Value(minScale)),
-                  ),
-                  [
-                    set(
-                      this.translateX,
-                      timing({
-                        from: this.translateX,
-                        to: maxX,
-                        ...timingDefaultParams,
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            alignAxisX(state),
 
-            cond(
-              and(
-                eq(state, State.END),
-                greaterOrEq(scaledHeight, viewerAreaHeight),
-                greaterOrEq(this.scale, new Value(minScale)),
-              ),
-              cond(
-                and(
-                  lessThan(this.translateY, negMaxY),
-                  greaterOrEq(this.scale, new Value(minScale)),
-                ),
-                [
-                  set(negMaxY, multiply(verticalMax, new Value(-1))),
-                  set(
-                    this.translateY,
-                    timing({
-                      from: this.translateY,
-                      to: negMaxY,
-                      ...timingDefaultParams,
-                    }),
-                  ),
-                ],
-                cond(
-                  and(
-                    greaterThan(this.translateY, maxY),
-                    greaterOrEq(this.scale, new Value(minScale)),
-                  ),
-                  [
-                    set(maxY, verticalMax),
-                    set(
-                      this.translateY,
-                      timing({
-                        from: this.translateY,
-                        to: maxY,
-                        ...timingDefaultParams,
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            alignAxisY(state),
 
             cond(
               and(
@@ -305,11 +316,11 @@ class ImageViewer extends Component<IProps> {
             cond(eq(state, State.END), [
               set(offsetZ, this.scale),
 
-              set(maxX, horizontalMax),
-              set(negMaxX, multiply(horizontalMax, new Value(-1))),
+              setBoundaries(),
 
-              set(maxY, verticalMax),
-              set(negMaxY, multiply(verticalMax, new Value(-1))),
+              alignAxisX(state),
+
+              alignAxisY(state),
             ]),
 
             cond(

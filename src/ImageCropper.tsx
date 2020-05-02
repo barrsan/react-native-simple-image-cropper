@@ -113,8 +113,8 @@ class ImageCropper extends PureComponent<IProps, IState> {
     const cropData = {
       offset,
       size: {
-        width: Math.round(sizeW),
-        height: Math.round(sizeH),
+        width: Math.floor(sizeW),
+        height: Math.floor(sizeH),
       },
       displaySize: {
         width: Math.round(cropSize.width),
