@@ -315,12 +315,7 @@ class ImageViewer extends Component<IProps> {
 
             cond(eq(state, State.END), [
               set(offsetZ, this.scale),
-
               setBoundaries(),
-
-              alignAxisX(state),
-
-              alignAxisY(state),
             ]),
 
             cond(
