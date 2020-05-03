@@ -4541,6 +4541,11 @@ react-native-gesture-handler@^1.6.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-image-size@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-image-size/-/react-native-image-size-1.1.3.tgz#7d69c2cd4e1d1632947867e47643ed8cabb9de27"
+  integrity sha512-jJvN6CjXVAm69LAVZNV7m7r50Qk9vuPZwLyrbs/k31/3Xs8bZyVCdvfP44FuBisITn/yFsiOo6i8NPrFBPH20w==
+
 react-native-reanimated@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.8.0.tgz#0b5719b20c1fed9aaf8afd9a12e21c9bd46ee428"

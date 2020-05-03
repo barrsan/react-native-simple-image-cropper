@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-image-cropper",
-  "version": "3.0.9",
+  "version": "4.0.0-beta-0",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -21,6 +21,7 @@
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": "*",
+    "react-native-image-size": "*",
     "react-native-reanimated": "*",
     "react-native-redash": "*"
   },
@@ -43,6 +44,7 @@
     "react": "^16.13.1",
     "react-native": "^0.62.2",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-image-size": "^1.1.3",
     "react-native-reanimated": "^1.8.0",
     "react-native-redash": "^12.0.2",
     "typescript": "^3.8.3"
