@@ -126,12 +126,6 @@ class App extends React.Component {
 }
 ```
 
-## Versions
-
-[Version 2](https://github.com/barrsan/react-native-simple-image-cropper/tree/2.x)
-
-[Version 1](https://github.com/barrsan/react-native-simple-image-cropper/tree/1.x)
-
 ## License
 
 MIT
