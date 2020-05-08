@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Image, Platform } from 'react-native';
 import ImageEditor from '@react-native-community/image-editor';
 import ImageSize from 'react-native-image-size';
+import ImageResizer from 'react-native-image-resizer';
+// @ts-ignore
+import ImageRotate from 'react-native-image-rotate';
 import ImageViewer from './ImageViewer';
 import {
   getPercentFromNumber,
@@ -34,6 +37,8 @@ export interface IState {
   height: number;
   loading: boolean;
   prevImageUri: string;
+  isVerticalImageForAndroidOnly: boolean;
+  rotationForAndroidOnly: number;
 }
 
 const window = Dimensions.get('window');
@@ -57,6 +62,8 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropSize,
       cropAreaSize,
       imageUri,
+      isVerticalImageForAndroidOnly,
+      rotationForAndroidOnly,
     } = params;
 
     const offset = {
@@ -123,11 +130,59 @@ class ImageCropper extends PureComponent<IProps, IState> {
       },
     };
 
-    return new Promise((resolve, reject) =>
-      ImageEditor.cropImage(imageUri, cropData)
-        .then(resolve)
-        .catch(reject),
-    );
+    if (Platform.OS === 'ios') {
+      return new Promise((resolve, reject) =>
+        ImageEditor.cropImage(imageUri, cropData)
+          .then(resolve)
+          .catch(reject),
+      );
+    }
+
+    if (rotationForAndroidOnly === 0) {
+      return new Promise((resolve, reject) => {
+        return ImageRotate.rotateImage(
+          imageUri,
+          isVerticalImageForAndroidOnly ? 90 : 0,
+          (urlRotatedImage: string) => {
+            return ImageResizer.createResizedImage(
+              urlRotatedImage,
+              srcSize.width,
+              srcSize.height,
+              'JPEG',
+              100,
+              360,
+            )
+              .then(async res => {
+                return ImageEditor.cropImage(res.uri, cropData)
+                  .then(resolve)
+                  .catch(reject);
+              })
+              .catch(reject);
+          },
+          (error: string) => {
+            return reject(error);
+          },
+        );
+      });
+    }
+
+    // INFO: RC
+    return new Promise((resolve, reject) => {
+      return ImageResizer.createResizedImage(
+        imageUri,
+        srcSize.width,
+        srcSize.height,
+        'JPEG',
+        100,
+        360,
+      )
+        .then(async ({ uri }) => {
+          return ImageEditor.cropImage(uri, cropData)
+            .then(resolve)
+            .catch(reject);
+        })
+        .catch(reject);
+    });
   };
 
   static defaultProps = defaultProps;
@@ -160,6 +215,8 @@ class ImageCropper extends PureComponent<IProps, IState> {
       height: 0,
     },
     prevImageUri: '',
+    isVerticalImageForAndroidOnly: false,
+    rotationForAndroidOnly: 0,
   };
 
   componentDidMount() {
@@ -181,61 +238,93 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropAreaHeight,
     } = this.props;
 
-    const { width, height } = await ImageSize.getSize(imageUri);
+    Image.getSize(
+      imageUri,
+      async (widthSize: number, heightSize: number) => {
+        let width = 0;
+        let height = 0;
+        let isVerticalImageForAndroidOnly = false;
+        let rotationForAndroidOnly = 0;
 
-    const areaWidth = cropAreaWidth!;
-    const areaHeight = cropAreaHeight!;
-    const srcSize = { width, height };
-    const fittedSize = { width: 0, height: 0 };
-
-    let scale = 1;
-
-    if (width > height) {
-      const ratio = w / height;
-      fittedSize.width = width * ratio;
-      fittedSize.height = w;
-    } else if (width < height) {
-      const ratio = w / width;
-      fittedSize.width = w;
-      fittedSize.height = height * ratio;
-    } else if (width === height) {
-      fittedSize.width = w;
-      fittedSize.height = w;
-    }
-
-    if (areaWidth < areaHeight || areaWidth === areaHeight) {
-      if (width < height) {
-        if (fittedSize.height < areaHeight) {
-          scale = Math.ceil((areaHeight / fittedSize.height) * 10) / 10;
+        if (Platform.OS === 'ios') {
+          width = widthSize;
+          height = heightSize;
         } else {
-          scale = Math.ceil((areaWidth / fittedSize.width) * 10) / 10;
+          const realSize = await ImageSize.getSize(imageUri);
+
+          rotationForAndroidOnly = realSize.rotation!;
+
+          isVerticalImageForAndroidOnly =
+            widthSize < heightSize && realSize.width > realSize.height;
+
+          width = isVerticalImageForAndroidOnly
+            ? realSize.height
+            : realSize.width;
+          height = isVerticalImageForAndroidOnly
+            ? realSize.width
+            : realSize.height;
         }
-      } else {
-        scale = Math.ceil((areaHeight / fittedSize.height) * 10) / 10;
-      }
-    }
 
-    scale = scale < 1 ? 1 : scale;
+        const areaWidth = cropAreaWidth!;
+        const areaHeight = cropAreaHeight!;
+        const srcSize = { width, height };
+        const fittedSize = { width: 0, height: 0 };
 
-    this.setState(
-      prevState => ({
-        ...prevState,
-        srcSize,
-        fittedSize,
-        minScale: scale,
-        loading: false,
-      }),
-      () => {
-        const { positionX, positionY } = this.state;
+        let scale = 1;
 
-        setCropperParams({
-          positionX,
-          positionY,
-          scale,
-          srcSize,
-          fittedSize,
-        });
+        if (width > height) {
+          const ratio = w / height;
+          fittedSize.width = width * ratio;
+          fittedSize.height = w;
+        } else if (width < height) {
+          const ratio = w / width;
+          fittedSize.width = w;
+          fittedSize.height = height * ratio;
+        } else if (width === height) {
+          fittedSize.width = w;
+          fittedSize.height = w;
+        }
+
+        if (areaWidth < areaHeight || areaWidth === areaHeight) {
+          if (width < height) {
+            if (fittedSize.height < areaHeight) {
+              scale = Math.ceil((areaHeight / fittedSize.height) * 10) / 10;
+            } else {
+              scale = Math.ceil((areaWidth / fittedSize.width) * 10) / 10;
+            }
+          } else {
+            scale = Math.ceil((areaHeight / fittedSize.height) * 10) / 10;
+          }
+        }
+
+        scale = scale < 1 ? 1 : scale;
+
+        this.setState(
+          prevState => ({
+            ...prevState,
+            srcSize,
+            fittedSize,
+            minScale: scale,
+            loading: false,
+            isVerticalImageForAndroidOnly,
+            rotationForAndroidOnly,
+          }),
+          () => {
+            const { positionX, positionY } = this.state;
+
+            setCropperParams({
+              positionX,
+              positionY,
+              scale,
+              srcSize,
+              fittedSize,
+              isVerticalImageForAndroidOnly,
+              rotationForAndroidOnly,
+            });
+          },
+        );
       },
+      () => {},
     );
   };
 
@@ -250,7 +339,12 @@ class ImageCropper extends PureComponent<IProps, IState> {
         scale,
       }),
       () => {
-        const { srcSize, fittedSize } = this.state;
+        const {
+          srcSize,
+          fittedSize,
+          isVerticalImageForAndroidOnly,
+          rotationForAndroidOnly,
+        } = this.state;
 
         setCropperParams({
           positionX,
@@ -258,6 +352,8 @@ class ImageCropper extends PureComponent<IProps, IState> {
           scale,
           srcSize,
           fittedSize,
+          isVerticalImageForAndroidOnly,
+          rotationForAndroidOnly,
         });
       },
     );

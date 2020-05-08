@@ -15,6 +15,8 @@ export interface ICropperParams {
   scale: number;
   srcSize: ISizeData;
   fittedSize: ISizeData;
+  isVerticalImageForAndroidOnly: boolean;
+  rotationForAndroidOnly: number;
 }
 
 export interface ICropParams extends ICropperParams {

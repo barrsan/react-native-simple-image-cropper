@@ -7,11 +7,6 @@ Simple react-native component for image cropping.
 <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase.gif" alt="showcase" width="89%">  |  <img src="https://raw.githubusercontent.com/barrsan/react-native-simple-image-cropper/master/showcase2.gif" alt="showcase" width="96%"> |
 :---------------:|:----------------:|
 
-
-**[DEMO 1](https://snack.expo.io/@barrsan/react-native-simple-image-cropper-demo)**
-
-**[DEMO 2](https://snack.expo.io/@barrsan/react-native-simple-image-cropper-demo-v1.1.2)**
-
 ---
 
 ## Installation
@@ -29,16 +24,24 @@ yarn add react-native-simple-image-cropper
 ## Installing dependencies
 
 ```bash
-npm i react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor react-native-image-size --save
+npm i react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor react-native-image-size react-native-image-resizer react-native-image-rotate@https://github.com/barrsan/react-native-image-rotate --save
 ```
 
 or
 
 ```bash
-yarn add react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor react-native-image-size
+yarn add react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor react-native-image-size react-native-image-resizer react-native-image-rotate@https://github.com/barrsan/react-native-image-rotate
 ```
 
-Libraries installation details: [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor), [react-native-gesture-handler](https://software-mansion.github.io/react-native-gesture-handler/docs/getting-started.html), [react-native-reanimated](https://software-mansion.github.io/react-native-reanimated/getting-started.html), [react-native-redash](https://wcandillon.github.io/react-native-redash/readme), [react-native-image-size](https://github.com/eXist-FraGGer/react-native-image-size).
+Libraries installation details:
+
+- [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor),
+- [react-native-gesture-handler](https://software-mansion.github.io/react-native-gesture-handler/docs/getting-started.html),
+- [react-native-reanimated](https://software-mansion.github.io/react-native-reanimated/getting-started.html),
+- [react-native-redash](https://wcandillon.github.io/react-native-redash/readme),
+- [react-native-image-size](https://github.com/eXist-FraGGer/react-native-image-size),
+- [react-native-image-resizer](https://github.com/bamlab/react-native-image-resizer),
+- [react-native-image-rotate (fork)](https://github.com/barrsan/react-native-image-rotate)
 
 ---
 
