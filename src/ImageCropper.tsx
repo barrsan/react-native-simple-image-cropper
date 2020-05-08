@@ -19,7 +19,7 @@ interface IProps {
   cropAreaHeight?: number;
   containerColor?: string;
   areaColor?: string;
-  aeraOverlay?: ReactNode;
+  areaOverlay?: ReactNode;
   setCropperParams: (params: ICropperParams) => void;
 }
 
@@ -272,7 +272,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropAreaHeight,
       containerColor,
       areaColor,
-      aeraOverlay,
+      areaOverlay,
     } = this.props;
 
     const areaWidth = cropAreaWidth!;
@@ -292,7 +292,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
         onMove={this.handleMove}
         containerColor={containerColor}
         imageBackdropColor={areaColor}
-        overlay={aeraOverlay}
+        overlay={areaOverlay}
       />
     ) : null;
   }

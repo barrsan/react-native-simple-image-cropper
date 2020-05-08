@@ -123,7 +123,7 @@ class App extends React.Component {
           cropAreaWidth={CROP_AREA_WIDTH}
           cropAreaHeight={CROP_AREA_HEIGHT}
           setCropperParams={this.setCropperParams}
-          aeraOverlay={Overlay}
+          areaOverlay={Overlay}
         />
         <View style={styles.buttonContainer}>
           <Button onPress={this.handlePress} title="Crop Image" color="blue" />
