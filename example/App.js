@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import ImageCropper from 'react-native-simple-image-cropper'; // eslint-disable-line
 
+import overlayPng from './overlay.png';
+
 const window = Dimensions.get('window');
 const w = window.width;
 const h = window.width;
@@ -103,6 +105,17 @@ class App extends React.Component {
     const { croppedImage, image } = this.state;
     const src = { uri: croppedImage };
 
+    const Overlay = (
+      <Image
+        style={{
+          height: CROP_AREA_HEIGHT,
+          width: CROP_AREA_WIDTH,
+        }}
+        source={overlayPng}
+        resizeMode="contain"
+      />
+    );
+
     return (
       <View style={styles.container}>
         <ImageCropper
@@ -110,6 +123,7 @@ class App extends React.Component {
           cropAreaWidth={CROP_AREA_WIDTH}
           cropAreaHeight={CROP_AREA_HEIGHT}
           setCropperParams={this.setCropperParams}
+          areaOverlay={Overlay}
         />
         <View style={styles.buttonContainer}>
           <Button onPress={this.handlePress} title="Crop Image" color="blue" />
