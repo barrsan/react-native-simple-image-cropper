@@ -15,10 +15,22 @@ export interface ICropperParams {
   scale: number;
   srcSize: ISizeData;
   fittedSize: ISizeData;
+  cropArea?: IConstraints;
 }
 
 export interface ICropParams extends ICropperParams {
   cropSize: ISizeData;
   cropAreaSize: ISizeData;
   imageUri: string;
+}
+
+export interface IConstraints {
+  offset: {
+    x: number;
+    y: number;
+  };
+  size: {
+    width: number;
+    height: number;
+  };
 }
