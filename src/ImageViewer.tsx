@@ -10,6 +10,17 @@ import Animated, { Easing } from 'react-native-reanimated';
 import { timing } from 'react-native-redash';
 import { IImageViewerData } from './types';
 
+export interface Constraints {
+  offset: {
+    x: number;
+    y: number;
+  };
+  size: {
+    width: number;
+    height: number;
+  };
+}
+
 interface IProps {
   image: string;
   areaWidth: number;
@@ -21,6 +32,7 @@ interface IProps {
   containerColor?: string;
   imageBackdropColor?: string;
   overlay?: ReactNode;
+  constraints?: Constraints;
 }
 
 const defaultProps = {
@@ -84,7 +96,14 @@ class ImageViewer extends Component<IProps> {
   constructor(props: IProps) {
     super(props);
 
-    const { areaWidth, areaHeight, imageWidth, imageHeight, minScale } = props;
+    const {
+      areaWidth,
+      areaHeight,
+      imageWidth,
+      imageHeight,
+      minScale,
+      constraints,
+    } = props;
 
     this.pinchRef = React.createRef();
     this.dragRef = React.createRef();
@@ -110,24 +129,63 @@ class ImageViewer extends Component<IProps> {
     const viewerImageWidth = new Value(imageWidth);
     const viewerImageHeight = new Value(imageHeight);
 
-    const maxX = new Value(0);
-    const negMaxX = new Value(0);
-
-    const maxY = new Value(0);
-    const negMaxY = new Value(0);
-
-    const horizontalMax = divide(
-      divide(sub(multiply(viewerImageWidth, this.scale), viewerAreaWidth), 2),
-      this.scale,
-    );
-
-    const verticalMax = divide(
-      divide(sub(multiply(viewerImageHeight, this.scale), viewerAreaHeight), 2),
-      this.scale,
-    );
-
     const scaledWidth = multiply(viewerImageWidth, this.scale);
     const scaledHeight = multiply(viewerImageHeight, this.scale);
+
+    const constraintsValues = {
+      offset: {
+        x: new Value(constraints?.offset.x || 0),
+        y: new Value(constraints?.offset.y || 0),
+      },
+      // if no constraints, we can go to whole area size
+      size: {
+        width: constraints?.size.width
+          ? new Value(constraints.size.width)
+          : viewerAreaWidth,
+        height: constraints?.size.height
+          ? new Value(constraints.size.height)
+          : viewerAreaHeight,
+      },
+    };
+
+    // when scaling, the translation origin is shifted from
+    // intitial origin: this value is the actual shift
+    const scalingOriginShiftX = divide(sub(viewerAreaWidth, scaledWidth), 2);
+    const scalingOriginShiftY = divide(sub(viewerAreaHeight, scaledHeight), 2);
+
+    // blocked by constraint left edge
+    const leftMarginX = constraintsValues.offset.x;
+    const translateXMax = divide(
+      sub(leftMarginX, scalingOriginShiftX),
+      this.scale,
+    );
+
+    // blocked by constraint rigth edge
+    const rightMarginX = add(
+      constraintsValues.offset.x,
+      constraintsValues.size.width,
+    );
+    const translateXMin = divide(
+      sub(rightMarginX, scaledWidth, scalingOriginShiftX),
+      this.scale,
+    );
+
+    // blocked by constraint top edge
+    const topMarginY = constraintsValues.offset.y;
+    const translateYMax = divide(
+      sub(topMarginY, scalingOriginShiftY),
+      this.scale,
+    );
+
+    // blocked by constraint bottom egde
+    const bottomMarginY = add(
+      constraintsValues.offset.y,
+      constraintsValues.size.height,
+    );
+    const translateYMin = divide(
+      sub(bottomMarginY, scaledWidth, scalingOriginShiftY),
+      this.scale,
+    );
 
     this.onTapGestureEvent = event([
       {
@@ -190,12 +248,6 @@ class ImageViewer extends Component<IProps> {
                 this.translateY,
                 add(divide(translationY, this.scale), offsetY),
               ),
-
-              set(maxX, horizontalMax),
-              set(negMaxX, multiply(horizontalMax, new Value(-1))),
-
-              set(maxY, verticalMax),
-              set(negMaxY, multiply(verticalMax, new Value(-1))),
             ]),
 
             cond(
@@ -206,7 +258,7 @@ class ImageViewer extends Component<IProps> {
               ),
               cond(
                 and(
-                  lessThan(this.translateX, negMaxX),
+                  lessThan(this.translateX, translateXMin),
                   greaterOrEq(this.scale, new Value(minScale)),
                 ),
                 [
@@ -214,14 +266,14 @@ class ImageViewer extends Component<IProps> {
                     this.translateX,
                     timing({
                       from: this.translateX,
-                      to: negMaxX,
+                      to: translateXMin,
                       ...timingDefaultParams,
                     }),
                   ),
                 ],
                 cond(
                   and(
-                    greaterThan(this.translateX, maxX),
+                    greaterThan(this.translateX, translateXMax),
                     greaterOrEq(this.scale, new Value(minScale)),
                   ),
                   [
@@ -229,7 +281,7 @@ class ImageViewer extends Component<IProps> {
                       this.translateX,
                       timing({
                         from: this.translateX,
-                        to: maxX,
+                        to: translateXMax,
                         ...timingDefaultParams,
                       }),
                     ),
@@ -246,32 +298,30 @@ class ImageViewer extends Component<IProps> {
               ),
               cond(
                 and(
-                  lessThan(this.translateY, negMaxY),
+                  lessThan(this.translateY, translateYMin),
                   greaterOrEq(this.scale, new Value(minScale)),
                 ),
                 [
-                  set(negMaxY, multiply(verticalMax, new Value(-1))),
                   set(
                     this.translateY,
                     timing({
                       from: this.translateY,
-                      to: negMaxY,
+                      to: translateYMin,
                       ...timingDefaultParams,
                     }),
                   ),
                 ],
                 cond(
                   and(
-                    greaterThan(this.translateY, maxY),
+                    greaterThan(this.translateY, translateYMax),
                     greaterOrEq(this.scale, new Value(minScale)),
                   ),
                   [
-                    set(maxY, verticalMax),
                     set(
                       this.translateY,
                       timing({
                         from: this.translateY,
-                        to: maxY,
+                        to: translateYMax,
                         ...timingDefaultParams,
                       }),
                     ),
@@ -303,15 +353,7 @@ class ImageViewer extends Component<IProps> {
               set(this.scale, multiply(offsetZ, scale)),
             ),
 
-            cond(eq(state, State.END), [
-              set(offsetZ, this.scale),
-
-              set(maxX, horizontalMax),
-              set(negMaxX, multiply(horizontalMax, new Value(-1))),
-
-              set(maxY, verticalMax),
-              set(negMaxY, multiply(verticalMax, new Value(-1))),
-            ]),
+            cond(eq(state, State.END), [set(offsetZ, this.scale)]),
 
             cond(
               and(
