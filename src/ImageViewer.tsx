@@ -6,7 +6,7 @@ import {
   PinchGestureHandler,
   State,
 } from 'react-native-gesture-handler';
-import Animated, { Easing, max, debug } from 'react-native-reanimated';
+import Animated, { Easing, max } from 'react-native-reanimated';
 import { timing } from 'react-native-redash';
 import { IImageViewerData, IConstraints } from './types';
 
