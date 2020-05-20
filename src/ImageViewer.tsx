@@ -6,20 +6,9 @@ import {
   PinchGestureHandler,
   State,
 } from 'react-native-gesture-handler';
-import Animated, { Easing } from 'react-native-reanimated';
+import Animated, { Easing, max, debug } from 'react-native-reanimated';
 import { timing } from 'react-native-redash';
-import { IImageViewerData } from './types';
-
-export interface Constraints {
-  offset: {
-    x: number;
-    y: number;
-  };
-  size: {
-    width: number;
-    height: number;
-  };
-}
+import { IImageViewerData, IConstraints } from './types';
 
 interface IProps {
   image: string;
@@ -27,12 +16,12 @@ interface IProps {
   areaHeight: number;
   imageWidth: number;
   imageHeight: number;
-  minScale: number;
   onMove: ({ positionX, positionY, scale }: IImageViewerData) => void;
   containerColor?: string;
   imageBackdropColor?: string;
   overlay?: ReactNode;
-  constraints?: Constraints;
+  minScale?: number;
+  constraints?: IConstraints;
 }
 
 const defaultProps = {
@@ -101,7 +90,6 @@ class ImageViewer extends Component<IProps> {
       areaHeight,
       imageWidth,
       imageHeight,
-      minScale,
       constraints,
     } = props;
 
@@ -110,18 +98,18 @@ class ImageViewer extends Component<IProps> {
 
     this.translateX = new Value(0);
     this.translateY = new Value(0);
-    this.scale = new Value(minScale);
+    this.scale = new Value(1);
 
     const timingDefaultParams = {
       duration: 200,
       easing: Easing.linear,
     };
 
-    const maxScale = minScale + 3;
+    const maxScale = 1 + 3;
 
     const offsetX = new Value(0);
     const offsetY = new Value(0);
-    const offsetZ = new Value(minScale);
+    const offsetZ = new Value(1);
 
     const viewerAreaWidth = new Value(areaWidth);
     const viewerAreaHeight = new Value(areaHeight);
@@ -187,12 +175,63 @@ class ImageViewer extends Component<IProps> {
       this.scale,
     );
 
+    const enforceConstraints = block([
+      cond(lessThan(this.translateX, translateXMin), [
+        set(
+          this.translateX,
+          timing({
+            from: this.translateX,
+            to: translateXMin,
+            ...timingDefaultParams,
+          }),
+        ),
+      ]),
+      cond(greaterThan(this.translateX, translateXMax), [
+        set(
+          this.translateX,
+          timing({
+            from: this.translateX,
+            to: translateXMax,
+            ...timingDefaultParams,
+          }),
+        ),
+      ]),
+      cond(lessThan(this.translateY, translateYMin), [
+        set(
+          this.translateY,
+          timing({
+            from: this.translateY,
+            to: translateYMin,
+            ...timingDefaultParams,
+          }),
+        ),
+      ]),
+      cond(greaterThan(this.translateY, translateYMax), [
+        set(
+          this.translateY,
+          timing({
+            from: this.translateY,
+            to: translateYMax,
+            ...timingDefaultParams,
+          }),
+        ),
+      ]),
+    ]);
+
+    const minScale = props.minScale
+      ? new Value(props.minScale)
+      : // scaledWidth < constraint.width && scaledHeight < constraint.width
+        max(
+          divide(constraintsValues.size.width, viewerImageWidth),
+          divide(constraintsValues.size.height, viewerImageHeight),
+        );
+
     this.onTapGestureEvent = event([
       {
         nativeEvent: ({ state }: { state: State }) =>
           block([
             cond(eq(state, State.END), [
-              set(offsetZ, new Value(minScale)),
+              set(offsetZ, minScale),
               set(offsetX, new Value(0)),
               set(offsetY, new Value(0)),
 
@@ -250,93 +289,12 @@ class ImageViewer extends Component<IProps> {
               ),
             ]),
 
-            cond(
-              and(
-                eq(state, State.END),
-                greaterOrEq(scaledWidth, viewerAreaWidth),
-                greaterOrEq(this.scale, new Value(minScale)),
-              ),
-              cond(
-                and(
-                  lessThan(this.translateX, translateXMin),
-                  greaterOrEq(this.scale, new Value(minScale)),
-                ),
-                [
-                  set(
-                    this.translateX,
-                    timing({
-                      from: this.translateX,
-                      to: translateXMin,
-                      ...timingDefaultParams,
-                    }),
-                  ),
-                ],
-                cond(
-                  and(
-                    greaterThan(this.translateX, translateXMax),
-                    greaterOrEq(this.scale, new Value(minScale)),
-                  ),
-                  [
-                    set(
-                      this.translateX,
-                      timing({
-                        from: this.translateX,
-                        to: translateXMax,
-                        ...timingDefaultParams,
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            cond(eq(state, State.END), enforceConstraints),
 
-            cond(
-              and(
-                eq(state, State.END),
-                greaterOrEq(scaledHeight, viewerAreaHeight),
-                greaterOrEq(this.scale, new Value(minScale)),
-              ),
-              cond(
-                and(
-                  lessThan(this.translateY, translateYMin),
-                  greaterOrEq(this.scale, new Value(minScale)),
-                ),
-                [
-                  set(
-                    this.translateY,
-                    timing({
-                      from: this.translateY,
-                      to: translateYMin,
-                      ...timingDefaultParams,
-                    }),
-                  ),
-                ],
-                cond(
-                  and(
-                    greaterThan(this.translateY, translateYMax),
-                    greaterOrEq(this.scale, new Value(minScale)),
-                  ),
-                  [
-                    set(
-                      this.translateY,
-                      timing({
-                        from: this.translateY,
-                        to: translateYMax,
-                        ...timingDefaultParams,
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            cond(
-              and(
-                eq(state, State.END),
-                greaterOrEq(this.scale, new Value(minScale)),
-              ),
-              [set(offsetX, this.translateX), set(offsetY, this.translateY)],
-            ),
+            cond(eq(state, State.END), [
+              set(offsetX, this.translateX),
+              set(offsetY, this.translateY),
+            ]),
           ]),
       },
     ]);
@@ -354,7 +312,8 @@ class ImageViewer extends Component<IProps> {
             ),
 
             cond(eq(state, State.END), [set(offsetZ, this.scale)]),
-
+            // todo: activate this leads to weird stutter effects
+            // cond(eq(state, State.END), enforceConstraints),
             cond(
               and(
                 eq(state, State.END),
