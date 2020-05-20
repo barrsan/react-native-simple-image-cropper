@@ -12,6 +12,7 @@ const h = window.width;
 // const IMAGE = 'https://picsum.photos/id/48/500/900';
 const IMAGE = 'https://picsum.photos/id/48/900/900';
 const IMAGE2 = 'https://picsum.photos/id/215/900/500';
+const TARGET = 'https://i.imgur.com/WWcQlwR.png';
 
 const CROP_AREA_WIDTH = w;
 const CROP_AREA_HEIGHT = h;
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
 
 class App extends React.Component {
   state = {
-    image: IMAGE,
+    image: TARGET,
     cropperParams: {},
     croppedImage: '',
   };
@@ -124,6 +125,16 @@ class App extends React.Component {
           cropAreaHeight={CROP_AREA_HEIGHT}
           setCropperParams={this.setCropperParams}
           areaOverlay={Overlay}
+          cropArea={{
+            offset: {
+              x: 0.125 * CROP_AREA_WIDTH,
+              y: 0.125 * CROP_AREA_HEIGHT,
+            },
+            size: {
+              width: 0.75 * CROP_AREA_WIDTH,
+              height: 0.75 * CROP_AREA_HEIGHT,
+            },
+          }}
         />
         <View style={styles.buttonContainer}>
           <Button onPress={this.handlePress} title="Crop Image" color="blue" />
