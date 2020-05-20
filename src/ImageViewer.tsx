@@ -183,7 +183,7 @@ class ImageViewer extends Component<IProps> {
       constraintsValues.size.height,
     );
     const translateYMin = divide(
-      sub(bottomMarginY, scaledWidth, scalingOriginShiftY),
+      sub(bottomMarginY, scaledHeight, scalingOriginShiftY),
       this.scale,
     );
 
