@@ -11,6 +11,7 @@ import {
   ICropParams,
   IImageViewerData,
   ISizeData,
+  IConstraints,
 } from './types';
 
 interface IProps {
@@ -21,6 +22,7 @@ interface IProps {
   areaColor?: string;
   areaOverlay?: ReactNode;
   setCropperParams: (params: ICropperParams) => void;
+  cropArea?: IConstraints;
 }
 
 export interface IState {
@@ -57,6 +59,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropSize,
       cropAreaSize,
       imageUri,
+      cropArea,
     } = params;
 
     const offset = {
@@ -69,6 +72,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
 
     const wScale = cropAreaW / scale;
     const hScale = cropAreaH / scale;
+
 
     const percentCropperAreaW = getPercentDiffNumberFromNumber(
       wScale,
@@ -179,7 +183,12 @@ class ImageCropper extends PureComponent<IProps, IState> {
     Image.getSize(
       imageUri,
       (width, height) => {
-        const { setCropperParams, cropAreaWidth, cropAreaHeight } = this.props;
+        const {
+          setCropperParams,
+          cropAreaWidth,
+          cropAreaHeight,
+          cropArea,
+        } = this.props;
 
         const areaWidth = cropAreaWidth!;
         const areaHeight = cropAreaHeight!;
@@ -232,6 +241,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
               scale,
               srcSize,
               fittedSize,
+              cropArea,
             });
           },
         );
@@ -241,7 +251,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
   };
 
   handleMove = ({ positionX, positionY, scale }: IImageViewerData) => {
-    const { setCropperParams } = this.props;
+    const { setCropperParams, cropArea } = this.props;
 
     this.setState(
       prevState => ({
@@ -259,6 +269,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
           scale,
           srcSize,
           fittedSize,
+          cropArea,
         });
       },
     );
@@ -273,6 +284,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       containerColor,
       areaColor,
       areaOverlay,
+      cropArea,
     } = this.props;
 
     const areaWidth = cropAreaWidth!;
@@ -288,11 +300,12 @@ class ImageCropper extends PureComponent<IProps, IState> {
         areaHeight={areaHeight}
         imageWidth={imageWidth}
         imageHeight={imageHeight}
-        minScale={minScale}
+        minScale={undefined}
         onMove={this.handleMove}
         containerColor={containerColor}
         imageBackdropColor={areaColor}
         overlay={areaOverlay}
+        constraints={cropArea}
       />
     ) : null;
   }
