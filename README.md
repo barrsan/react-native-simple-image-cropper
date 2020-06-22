@@ -123,12 +123,25 @@ class App extends React.Component {
 }
 ```
 
-## Versions
+## Area overlay
 
-[Version 2](https://github.com/barrsan/react-native-simple-image-cropper/tree/2.x)
+To add a custom overlay, use the `areaOverlay` property
 
-[Version 1](https://github.com/barrsan/react-native-simple-image-cropper/tree/1.x)
+```javascript
+
+<ImageCropper
+  ...
+  areaOverlay={<Image src={require('./overlay.png')}>}
+/>
+
+```
 
 ## License
 
 MIT
+
+## Thanks for contribution
+
+- [alexstrat](https://github.com/alexstrat)
+- [rederteph](https://github.com/rederteph)
+

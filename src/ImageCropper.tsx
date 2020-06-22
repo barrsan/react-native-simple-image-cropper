@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import { Image, Dimensions } from 'react-native';
 import ImageEditor from '@react-native-community/image-editor';
 import ImageViewer from './ImageViewer';
@@ -6,7 +6,12 @@ import {
   getPercentFromNumber,
   getPercentDiffNumberFromNumber,
 } from './helpers/percentCalculator';
-import { ICropParams, IImageViewerData, ISizeData } from './types';
+import {
+  ICropperParams,
+  ICropParams,
+  IImageViewerData,
+  ISizeData,
+} from './types';
 
 interface IProps {
   imageUri: string;
@@ -14,18 +19,20 @@ interface IProps {
   cropAreaHeight?: number;
   containerColor?: string;
   areaColor?: string;
-  setCropperParams: (params: IState) => void;
+  areaOverlay?: ReactNode;
+  setCropperParams: (params: ICropperParams) => void;
 }
 
 export interface IState {
   positionX: number;
   positionY: number;
+  scale: number;
+  minScale: number;
+  srcSize: ISizeData;
+  fittedSize: ISizeData;
   width: number;
   height: number;
-  minScale: number;
-  adjustedHeight: number;
   loading: boolean;
-  fittedSize: ISizeData;
   prevImageUri: string;
 }
 
@@ -42,14 +49,14 @@ const defaultProps = {
 class ImageCropper extends PureComponent<IProps, IState> {
   static crop = (params: ICropParams): Promise<string | null | undefined> => {
     const {
-      imageUri,
-      cropSize,
       positionX,
       positionY,
-      cropAreaSize,
+      scale,
       srcSize,
       fittedSize,
-      scale,
+      cropSize,
+      cropAreaSize,
+      imageUri,
     } = params;
 
     const offset = {
@@ -141,9 +148,13 @@ class ImageCropper extends PureComponent<IProps, IState> {
     positionY: 0,
     width: 0,
     height: 0,
+    scale: 1,
     minScale: 1,
-    adjustedHeight: 0,
     loading: true,
+    srcSize: {
+      width: 0,
+      height: 0,
+    },
     fittedSize: {
       width: 0,
       height: 0,
@@ -213,7 +224,15 @@ class ImageCropper extends PureComponent<IProps, IState> {
             loading: false,
           }),
           () => {
-            setCropperParams(this.state);
+            const { positionX, positionY } = this.state;
+
+            setCropperParams({
+              positionX,
+              positionY,
+              scale,
+              srcSize,
+              fittedSize,
+            });
           },
         );
       },
@@ -231,7 +250,17 @@ class ImageCropper extends PureComponent<IProps, IState> {
         positionY,
         scale,
       }),
-      () => setCropperParams(this.state),
+      () => {
+        const { srcSize, fittedSize } = this.state;
+
+        setCropperParams({
+          positionX,
+          positionY,
+          scale,
+          srcSize,
+          fittedSize,
+        });
+      },
     );
   };
 
@@ -243,6 +272,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropAreaHeight,
       containerColor,
       areaColor,
+      areaOverlay,
     } = this.props;
 
     const areaWidth = cropAreaWidth!;
@@ -262,6 +292,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
         onMove={this.handleMove}
         containerColor={containerColor}
         imageBackdropColor={areaColor}
+        overlay={areaOverlay}
       />
     ) : null;
   }

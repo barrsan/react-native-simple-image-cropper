@@ -1,5 +1,5 @@
-import React, { Component, RefObject } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { Component, RefObject, ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
   TapGestureHandler,
   PanGestureHandler,
@@ -20,6 +20,7 @@ interface IProps {
   onMove: ({ positionX, positionY, scale }: IImageViewerData) => void;
   containerColor?: string;
   imageBackdropColor?: string;
+  overlay?: ReactNode;
 }
 
 const defaultProps = {
@@ -353,6 +354,7 @@ class ImageViewer extends Component<IProps> {
       areaHeight,
       containerColor,
       imageBackdropColor,
+      overlay,
     } = this.props;
 
     const imageSrc = {
@@ -370,6 +372,14 @@ class ImageViewer extends Component<IProps> {
       width: areaWidth,
       height: areaHeight,
       backgroundColor: imageBackdropColor,
+    };
+
+    const overlayContainerStyle = {
+      position: 'absolute' as 'absolute',
+      top: 0,
+      left: 0,
+      height: areaHeight,
+      width: areaWidth,
     };
 
     const imageWrapperStyles = [styles.imageWrapper, areaStyles];
@@ -427,6 +437,9 @@ class ImageViewer extends Component<IProps> {
                 >
                   <Animated.View style={imageWrapperStyles} collapsable={false}>
                     <Animated.Image style={imageStyles} source={imageSrc} />
+                    {overlay && (
+                      <View style={overlayContainerStyle}>{overlay}</View>
+                    )}
                   </Animated.View>
                 </PinchGestureHandler>
               </Animated.View>
