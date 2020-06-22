@@ -57,6 +57,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
       cropSize,
       cropAreaSize,
       imageUri,
+      resizeMode,
     } = params;
 
     const offset = {
@@ -113,6 +114,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
 
     const cropData = {
       offset,
+      resizeMode,
       size: {
         width: Math.round(sizeW),
         height: Math.round(sizeH),
