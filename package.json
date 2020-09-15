@@ -1,50 +1,31 @@
 {
-  "name": "react-native-simple-image-cropper",
-  "version": "3.1.0",
-  "description": "",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "name": "imageCropperSimplified",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "dev": "yarn tsc --watch",
-    "build": "rm -rf ./build/* && tsc",
-    "watch:example": "concurrently \"yarn dev\" \"yarn cpx 'src/**/*' 'example/node_modules/react-native-simple-image-cropper' --watch\"",
-    "build:example": "cpx 'build/**/*' 'example/node_modules/react-native-simple-image-cropper'"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/barrsan/react-native-simple-image-cropper.git"
-  },
-  "author": "Alex Baretsky <41ax@mail.ru>",
-  "license": "MIT",
-  "peerDependencies": {
-    "@react-native-community/image-editor": "*",
-    "react": "*",
-    "react-native": "*",
-    "react-native-gesture-handler": "*",
-    "react-native-reanimated": "*",
-    "react-native-redash": "*"
+  "dependencies": {
+    "@react-native-community/image-editor": "^2.3.0",
+    "react": "16.13.1",
+    "react-native": "0.63.2",
+    "react-native-image-pan-zoom": "^2.1.12"
   },
   "devDependencies": {
-    "@react-native-community/image-editor": "^2.3.0",
-    "@types/react": "^16.9.34",
-    "@types/react-native": "^0.62.2",
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
-    "concurrently": "^5.1.0",
-    "cpx": "^1.5.0",
-    "eslint": "^5.14.1",
-    "eslint-config-airbnb-typescript": "^4.0.0",
-    "eslint-config-prettier": "^4.3.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.13.0",
-    "prettier": "^1.16.4",
-    "react": "^16.13.1",
-    "react-native": "^0.62.2",
-    "react-native-gesture-handler": "^1.6.1",
-    "react-native-reanimated": "^1.8.0",
-    "react-native-redash": "^12.0.2",
-    "typescript": "^3.8.3"
+    "@babel/core": "^7.11.6",
+    "@babel/runtime": "^7.11.2",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.3.0",
+    "eslint": "^7.9.0",
+    "jest": "^26.4.2",
+    "metro-react-native-babel-preset": "^0.63.0",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }
