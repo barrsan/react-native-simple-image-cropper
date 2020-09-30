@@ -8,10 +8,12 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, { Easing } from 'react-native-reanimated';
 import { timing } from 'react-native-redash';
+import Video from 'react-native-video';
 import { IImageViewerData } from './types';
 
 interface IProps {
   image: string;
+  video?: boolean;
   areaWidth: number;
   areaHeight: number;
   imageWidth: number;
@@ -21,6 +23,8 @@ interface IProps {
   containerColor?: string;
   imageBackdropColor?: string;
   overlay?: ReactNode;
+  positionX: number;
+  positionY: number;
 }
 
 const defaultProps = {
@@ -84,13 +88,21 @@ class ImageViewer extends Component<IProps> {
   constructor(props: IProps) {
     super(props);
 
-    const { areaWidth, areaHeight, imageWidth, imageHeight, minScale } = props;
+    const {
+      areaWidth,
+      areaHeight,
+      imageWidth,
+      imageHeight,
+      minScale,
+      positionX,
+      positionY,
+    } = props;
 
     this.pinchRef = React.createRef();
     this.dragRef = React.createRef();
 
-    this.translateX = new Value(0);
-    this.translateY = new Value(0);
+    this.translateX = new Value(positionX);
+    this.translateY = new Value(positionY);
     this.scale = new Value(minScale);
 
     const timingDefaultParams = {
@@ -355,6 +367,7 @@ class ImageViewer extends Component<IProps> {
       containerColor,
       imageBackdropColor,
       overlay,
+      video,
     } = this.props;
 
     const imageSrc = {
@@ -403,6 +416,8 @@ class ImageViewer extends Component<IProps> {
       },
     ];
 
+    console.log(`video ${video}`);
+
     return (
       <>
         <Animated.Code>
@@ -436,7 +451,19 @@ class ImageViewer extends Component<IProps> {
                   onHandlerStateChange={this.onPinchGestureEvent}
                 >
                   <Animated.View style={imageWrapperStyles} collapsable={false}>
-                    <Animated.Image style={imageStyles} source={imageSrc} />
+                    {!video && (
+                      <Animated.Image style={imageStyles} source={imageSrc} />
+                    )}
+                    {video && (
+                      <Animated.View style={imageStyles}>
+                        <Video
+                          repeat
+                          resizeMode="cover"
+                          source={imageSrc}
+                          style={{ flex: 1 }}
+                        />
+                      </Animated.View>
+                    )}
                     {overlay && (
                       <View style={overlayContainerStyle}>{overlay}</View>
                     )}
