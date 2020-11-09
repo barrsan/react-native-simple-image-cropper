@@ -1,13 +1,13 @@
-import React, { Component, RefObject, ReactNode } from 'react';
+import React, { Component, ReactNode, RefObject } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  TapGestureHandler,
   PanGestureHandler,
   PinchGestureHandler,
   State,
+  TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, { Easing } from 'react-native-reanimated';
-import { timing } from 'react-native-redash';
+import { timing } from './helpers/TimingHelper';
 import { IImageViewerData } from './types';
 
 interface IProps {

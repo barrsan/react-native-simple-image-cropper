@@ -21,8 +21,7 @@
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": "*",
-    "react-native-reanimated": "*",
-    "react-native-redash": "*"
+    "react-native-reanimated": "*"
   },
   "devDependencies": {
     "@react-native-community/image-editor": "^2.3.0",
@@ -44,7 +43,6 @@
     "react-native": "^0.62.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.8.0",
-    "react-native-redash": "^12.0.2",
     "typescript": "^3.8.3"
   }
 }
