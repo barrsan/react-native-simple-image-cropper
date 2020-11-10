@@ -29,16 +29,16 @@ yarn add react-native-simple-image-cropper
 ## Installing dependencies
 
 ```bash
-npm i react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor --save
+npm i react-native-reanimated react-native-gesture-handler @react-native-community/image-editor --save
 ```
 
 or
 
 ```bash
-yarn add react-native-reanimated react-native-gesture-handler react-native-redash @react-native-community/image-editor
+yarn add react-native-reanimated react-native-gesture-handler @react-native-community/image-editor
 ```
 
-Libraries installation details: [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor), [react-native-gesture-handler](https://software-mansion.github.io/react-native-gesture-handler/docs/getting-started.html), [react-native-reanimated](https://software-mansion.github.io/react-native-reanimated/getting-started.html), [react-native-redash](https://wcandillon.github.io/react-native-redash/readme).
+Libraries installation details: [@react-native-community/image-editor](https://github.com/react-native-community/react-native-image-editor), [react-native-gesture-handler](https://software-mansion.github.io/react-native-gesture-handler/docs/getting-started.html), [react-native-reanimated](https://software-mansion.github.io/react-native-reanimated/getting-started.html).
 
 ---
 
@@ -144,4 +144,4 @@ MIT
 
 - [alexstrat](https://github.com/alexstrat)
 - [rederteph](https://github.com/rederteph)
-
+- [3GOMESz](https://github.com/3GOMESz)
