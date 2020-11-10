@@ -21,4 +21,5 @@ export interface ICropParams extends ICropperParams {
   cropSize: ISizeData;
   cropAreaSize: ISizeData;
   imageUri: string;
+  resizeMode?: 'contain' | 'cover' | 'stretch';
 }
