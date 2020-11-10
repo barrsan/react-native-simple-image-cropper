@@ -13,12 +13,12 @@ const {
   timing: reTiming,
 } = Animated;
 
-interface TimingAnimation {
+interface ITimingAnimation {
   state: Animated.TimingState;
   config: Animated.TimingConfig;
 }
 
-interface AnimateParams<S, C> {
+interface IAnimateParams<S, C> {
   clock: Animated.Clock;
   fn: (
     clock: Animated.Clock,
@@ -30,20 +30,23 @@ interface AnimateParams<S, C> {
   from: Animated.Adaptable<number>;
 }
 
-interface TimingAnimation {
-  state: Animated.TimingState;
-  config: Animated.TimingConfig;
+export interface ITimingParams {
+  clock?: Animated.Clock;
+  from?: Animated.Adaptable<number>;
+  to?: Animated.Adaptable<number>;
+  duration?: Animated.Adaptable<number>;
+  easing?: (v: Animated.Adaptable<number>) => Animated.Node<number>;
 }
 
-type Animation = TimingAnimation;
+type TAnimation = ITimingAnimation;
 
-const animate = <T extends Animation>({
+const animate = <T extends TAnimation>({
   fn,
   clock,
   state,
   config,
   from,
-}: AnimateParams<T['state'], T['config']>) =>
+}: IAnimateParams<T['state'], T['config']>) =>
   block([
     cond(not(clockRunning(clock)), [
       set(state.finished, 0),
@@ -56,15 +59,7 @@ const animate = <T extends Animation>({
     state.position,
   ]);
 
-export interface TimingParams {
-  clock?: Animated.Clock;
-  from?: Animated.Adaptable<number>;
-  to?: Animated.Adaptable<number>;
-  duration?: Animated.Adaptable<number>;
-  easing?: (v: Animated.Adaptable<number>) => Animated.Node<number>;
-}
-
-export const timing = (params: TimingParams) => {
+export const timing = (params: ITimingParams) => {
   const { clock, easing, duration, from, to } = {
     clock: new Clock(),
     duration: 250,
@@ -92,7 +87,7 @@ export const timing = (params: TimingParams) => {
       set(config.toValue, to),
       set(state.frameTime, 0),
     ]),
-    animate<TimingAnimation>({
+    animate<ITimingAnimation>({
       clock,
       fn: reTiming,
       state,

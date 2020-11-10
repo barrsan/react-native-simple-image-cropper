@@ -7,7 +7,7 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, { Easing } from 'react-native-reanimated';
-import { timing } from './helpers/TimingHelper';
+import { timing } from './helpers/reanimatedTiming';
 import { IImageViewerData } from './types';
 
 interface IProps {
