@@ -1,5 +1,6 @@
 import React, { PureComponent, ReactNode } from 'react';
 import { Image, Dimensions } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ImageEditor from '@react-native-community/image-editor';
 import ImageViewer from './ImageViewer';
 import {
@@ -281,20 +282,24 @@ class ImageCropper extends PureComponent<IProps, IState> {
     const imageWidth = fittedSize.width;
     const imageHeight = fittedSize.height;
 
-    return !loading ? (
-      <ImageViewer
-        image={imageUri}
-        areaWidth={areaWidth}
-        areaHeight={areaHeight}
-        imageWidth={imageWidth}
-        imageHeight={imageHeight}
-        minScale={minScale}
-        onMove={this.handleMove}
-        containerColor={containerColor}
-        imageBackdropColor={areaColor}
-        overlay={areaOverlay}
-      />
-    ) : null;
+    return (
+      <GestureHandlerRootView>
+        {!loading ? (
+          <ImageViewer
+            image={imageUri}
+            areaWidth={areaWidth}
+            areaHeight={areaHeight}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+            minScale={minScale}
+            onMove={this.handleMove}
+            containerColor={containerColor}
+            imageBackdropColor={areaColor}
+            overlay={areaOverlay}
+          />
+        ) : null}
+      </GestureHandlerRootView>
+    );
   }
 }
 
