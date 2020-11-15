@@ -1,15 +1,19 @@
-import React from 'react';
-import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
-import ImageCropper from 'react-native-simple-image-cropper'; // eslint-disable-line
-
-import overlayPng from './overlay.png';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  StatusBar,
+  View,
+  Image,
+  Button,
+  Dimensions,
+} from 'react-native';
+// eslint-disable-next-line
+import ImageCropper from 'react-native-simple-image-cropper';
 
 const window = Dimensions.get('window');
 const w = window.width;
 const h = window.width;
-// const h = window.height;
 
-// const IMAGE = 'https://picsum.photos/id/48/500/900';
 const IMAGE = 'https://picsum.photos/id/48/900/900';
 const IMAGE2 = 'https://picsum.photos/id/215/900/500';
 
@@ -23,19 +27,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
 
-  buttonContainer: {
+  buttonWrapper: {
     position: 'absolute',
     bottom: 0,
     left: 0,
   },
 
-  buttonChangeImageContainer: {
+  buttonChangeImageWrapper: {
     position: 'absolute',
     bottom: 0,
     right: 0,
   },
 
-  imagePreviewContainer: {
+  previewImageWrapper: {
     position: 'absolute',
     top: 20,
     right: 0,
@@ -45,36 +49,25 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
 
-  imagePreview: {
+  previewImage: {
     width: CROP_AREA_WIDTH / 3,
     height: CROP_AREA_HEIGHT / 3,
   },
 });
 
-class App extends React.Component {
-  state = {
-    image: IMAGE,
-    cropperParams: {},
-    croppedImage: '',
+const App = () => {
+  const [imageState, setImageState] = useState(IMAGE);
+  const [cropperParamsState, setCropperParamsState] = useState({});
+  const [croppedImageState, setCroppedImageState] = useState('');
+
+  const croppedImageSrc = { uri: croppedImageState };
+
+  const handleChangeImagePress = () => {
+    const targetImage = imageState === IMAGE ? IMAGE2 : IMAGE;
+    setImageState(targetImage);
   };
 
-  setCropperParams = cropperParams => {
-    this.setState(prevState => ({
-      ...prevState,
-      cropperParams,
-    }));
-  };
-
-  handleChangeImagePress = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      image: prevState.image === IMAGE ? IMAGE2 : IMAGE,
-    }));
-  };
-
-  handlePress = async () => {
-    const { image } = this.state;
-    const { cropperParams } = this.state;
+  const handleCropPress = async () => {
     const cropSize = {
       width: CROP_AREA_WIDTH / 2,
       height: CROP_AREA_HEIGHT / 2,
@@ -87,66 +80,51 @@ class App extends React.Component {
 
     try {
       const result = await ImageCropper.crop({
-        ...cropperParams,
-        imageUri: image,
+        ...cropperParamsState,
+        imageUri: imageState,
         cropSize,
         cropAreaSize,
       });
-      this.setState(prevState => ({
-        ...prevState,
-        croppedImage: result,
-      }));
+
+      setCroppedImageState(result);
     } catch (error) {
+      // eslint-disable-next-line
       console.log(error);
     }
   };
 
-  render() {
-    const { croppedImage, image } = this.state;
-    const src = { uri: croppedImage };
-
-    const Overlay = (
-      <Image
-        style={{
-          height: CROP_AREA_HEIGHT,
-          width: CROP_AREA_WIDTH,
-        }}
-        source={overlayPng}
-        resizeMode="contain"
-      />
-    );
-
-    return (
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
         <ImageCropper
-          imageUri={image}
+          imageUri={imageState}
           cropAreaWidth={CROP_AREA_WIDTH}
           cropAreaHeight={CROP_AREA_HEIGHT}
-          setCropperParams={this.setCropperParams}
-          areaOverlay={Overlay}
+          setCropperParams={setCropperParamsState}
         />
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handlePress} title="Crop Image" color="blue" />
+        <View style={styles.buttonWrapper}>
+          <Button onPress={handleCropPress} title="Crop Image" color="blue" />
         </View>
-        <View style={styles.buttonChangeImageContainer}>
+        <View style={styles.buttonChangeImageWrapper}>
           <Button
-            onPress={this.handleChangeImagePress}
+            onPress={handleChangeImagePress}
             title="Change Image"
             color="blue"
           />
         </View>
-        {croppedImage ? (
-          <View style={styles.imagePreviewContainer}>
+        {croppedImageState ? (
+          <View style={styles.previewImageWrapper}>
             <Image
               resizeMode="cover"
-              style={styles.imagePreview}
-              source={src}
+              style={styles.previewImage}
+              source={croppedImageSrc}
             />
           </View>
         ) : null}
       </View>
-    );
-  }
-}
+    </>
+  );
+};
 
 export default App;
