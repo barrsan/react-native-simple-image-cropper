@@ -38,9 +38,7 @@ export interface ITimingParams {
   easing?: (v: Animated.Adaptable<number>) => Animated.Node<number>;
 }
 
-type TAnimation = ITimingAnimation;
-
-const animate = <T extends TAnimation>({
+const animate = <T extends ITimingAnimation>({
   fn,
   clock,
   state,
@@ -59,7 +57,7 @@ const animate = <T extends TAnimation>({
     state.position,
   ]);
 
-export const timing = (params: ITimingParams) => {
+const timing = (params: ITimingParams) => {
   const { clock, easing, duration, from, to } = {
     clock: new Clock(),
     duration: 250,
@@ -96,3 +94,5 @@ export const timing = (params: ITimingParams) => {
     }),
   ]);
 };
+
+export { timing };
