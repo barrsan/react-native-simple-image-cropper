@@ -7,8 +7,6 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "clean": "rimraf ios/build ios/Pods ios/Podfile.lock android/.gradle android/app/build package-lock.json yarn.lock yarn-lock.json node_modules",
     "podinstall": "cd ios && pod install && cd .."
   },
   "dependencies": {
