@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     'react/jsx-one-expression-per-line': 'off',
     'react/jsx-filename-extension': 'off',
+    'import/prefer-default-export': 'off',
   },
   settings: {
     react: {

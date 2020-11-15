@@ -125,9 +125,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
     };
 
     return new Promise((resolve, reject) =>
-      ImageEditor.cropImage(imageUri, cropData)
-        .then(resolve)
-        .catch(reject),
+      ImageEditor.cropImage(imageUri, cropData).then(resolve).catch(reject),
     );
   };
 
@@ -217,7 +215,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
         scale = scale < 1 ? 1 : scale;
 
         this.setState(
-          prevState => ({
+          (prevState) => ({
             ...prevState,
             srcSize,
             fittedSize,
@@ -245,7 +243,7 @@ class ImageCropper extends PureComponent<IProps, IState> {
     const { setCropperParams } = this.props;
 
     this.setState(
-      prevState => ({
+      (prevState) => ({
         ...prevState,
         positionX,
         positionY,
